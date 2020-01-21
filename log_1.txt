@@ -1,0 +1,654 @@
+Running in batch mode: run 1/1
+Start time: Tue Jan 21 19:15:02 2020
+
+Evaluating initial population...
+Generation: 0
+Elapsed time: 0
+Deme: 0
+Evaluations: 100
+Stats: fitness
+	max: inf
+	min: 0.928753
+	avg: inf
+	stdev: -nan
+
+Generation: 1
+Elapsed time: 0
+Deme: 0
+Evaluations: 200
+Stats: fitness
+	max: inf
+	min: 0.926826
+	avg: inf
+	stdev: -nan
+
+Generation: 2
+Elapsed time: 0
+Deme: 0
+Evaluations: 300
+Stats: fitness
+	max: inf
+	min: 0.926826
+	avg: inf
+	stdev: -nan
+
+Generation: 3
+Elapsed time: 0
+Deme: 0
+Evaluations: 400
+Stats: fitness
+	max: 1.83234
+	min: 0.926826
+	avg: 0.940728
+	stdev: 0.091918
+
+Generation: 4
+Elapsed time: 1
+Deme: 0
+Evaluations: 500
+Stats: fitness
+	max: 5.53191
+	min: 0.883352
+	avg: 0.985904
+	stdev: 0.468156
+
+Generation: 5
+Elapsed time: 1
+Deme: 0
+Evaluations: 600
+Stats: fitness
+	max: 4.32649
+	min: 0.881466
+	avg: 0.977654
+	stdev: 0.344998
+
+Generation: 6
+Elapsed time: 1
+Deme: 0
+Evaluations: 700
+Stats: fitness
+	max: 1.53899
+	min: 0.876737
+	avg: 0.95086
+	stdev: 0.0976373
+
+Generation: 7
+Elapsed time: 1
+Deme: 0
+Evaluations: 800
+Stats: fitness
+	max: inf
+	min: 0.876737
+	avg: inf
+	stdev: -nan
+
+Generation: 8
+Elapsed time: 1
+Deme: 0
+Evaluations: 900
+Stats: fitness
+	max: inf
+	min: 0.872302
+	avg: inf
+	stdev: -nan
+
+Generation: 9
+Elapsed time: 1
+Deme: 0
+Evaluations: 1000
+Stats: fitness
+	max: 1.05707
+	min: 0.814866
+	avg: 0.899152
+	stdev: 0.0379415
+
+Generation: 10
+Elapsed time: 1
+Deme: 0
+Evaluations: 1100
+Stats: fitness
+	max: inf
+	min: 0.814866
+	avg: inf
+	stdev: -nan
+
+Generation: 11
+Elapsed time: 2
+Deme: 0
+Evaluations: 1200
+Stats: fitness
+	max: inf
+	min: 0.760865
+	avg: inf
+	stdev: -nan
+
+Generation: 12
+Elapsed time: 2
+Deme: 0
+Evaluations: 1300
+Stats: fitness
+	max: 1.14647
+	min: 0.760865
+	avg: 0.870827
+	stdev: 0.0361487
+
+Generation: 13
+Elapsed time: 2
+Deme: 0
+Evaluations: 1400
+Stats: fitness
+	max: 1.4993
+	min: 0.760239
+	avg: 0.884735
+	stdev: 0.102192
+
+Generation: 14
+Elapsed time: 2
+Deme: 0
+Evaluations: 1500
+Stats: fitness
+	max: 1.31918
+	min: 0.753543
+	avg: 0.868605
+	stdev: 0.0825583
+
+Generation: 15
+Elapsed time: 2
+Deme: 0
+Evaluations: 1600
+Stats: fitness
+	max: inf
+	min: 0.753543
+	avg: inf
+	stdev: -nan
+
+Generation: 16
+Elapsed time: 2
+Deme: 0
+Evaluations: 1700
+Stats: fitness
+	max: 1.4041
+	min: 0.750257
+	avg: 0.836545
+	stdev: 0.098535
+
+Generation: 17
+Elapsed time: 2
+Deme: 0
+Evaluations: 1800
+Stats: fitness
+	max: 1.30238
+	min: 0.750257
+	avg: 0.819564
+	stdev: 0.107121
+
+Generation: 18
+Elapsed time: 2
+Deme: 0
+Evaluations: 1900
+Stats: fitness
+	max: 1.12104
+	min: 0.750257
+	avg: 0.797413
+	stdev: 0.0811166
+
+Generation: 19
+Elapsed time: 3
+Deme: 0
+Evaluations: 2000
+Stats: fitness
+	max: inf
+	min: 0.747897
+	avg: inf
+	stdev: -nan
+
+Generation: 20
+Elapsed time: 3
+Deme: 0
+Evaluations: 2100
+Stats: fitness
+	max: 1.36967
+	min: 0.736749
+	avg: 0.800965
+	stdev: 0.112456
+
+Generation: 21
+Elapsed time: 3
+Deme: 0
+Evaluations: 2200
+Stats: fitness
+	max: inf
+	min: 0.706818
+	avg: inf
+	stdev: -nan
+
+Generation: 22
+Elapsed time: 3
+Deme: 0
+Evaluations: 2300
+Stats: fitness
+	max: inf
+	min: 0.706818
+	avg: inf
+	stdev: -nan
+
+Generation: 23
+Elapsed time: 3
+Deme: 0
+Evaluations: 2400
+Stats: fitness
+	max: inf
+	min: 0.706818
+	avg: inf
+	stdev: -nan
+
+Generation: 24
+Elapsed time: 3
+Deme: 0
+Evaluations: 2500
+Stats: fitness
+	max: inf
+	min: 0.705316
+	avg: inf
+	stdev: -nan
+
+Generation: 25
+Elapsed time: 3
+Deme: 0
+Evaluations: 2600
+Stats: fitness
+	max: 1.34434
+	min: 0.704797
+	avg: 0.769105
+	stdev: 0.139465
+
+Generation: 26
+Elapsed time: 4
+Deme: 0
+Evaluations: 2700
+Stats: fitness
+	max: inf
+	min: 0.704797
+	avg: inf
+	stdev: -nan
+
+Generation: 27
+Elapsed time: 4
+Deme: 0
+Evaluations: 2800
+Stats: fitness
+	max: inf
+	min: 0.704797
+	avg: inf
+	stdev: -nan
+
+Generation: 28
+Elapsed time: 4
+Deme: 0
+Evaluations: 2900
+Stats: fitness
+	max: inf
+	min: 0.702799
+	avg: inf
+	stdev: -nan
+
+Generation: 29
+Elapsed time: 4
+Deme: 0
+Evaluations: 3000
+Stats: fitness
+	max: inf
+	min: 0.701049
+	avg: inf
+	stdev: -nan
+
+Generation: 30
+Elapsed time: 4
+Deme: 0
+Evaluations: 3100
+Stats: fitness
+	max: inf
+	min: 0.701049
+	avg: inf
+	stdev: -nan
+
+Generation: 31
+Elapsed time: 4
+Deme: 0
+Evaluations: 3200
+Stats: fitness
+	max: inf
+	min: 0.701049
+	avg: inf
+	stdev: -nan
+
+Generation: 32
+Elapsed time: 4
+Deme: 0
+Evaluations: 3300
+Stats: fitness
+	max: inf
+	min: 0.700337
+	avg: inf
+	stdev: -nan
+
+Generation: 33
+Elapsed time: 5
+Deme: 0
+Evaluations: 3400
+Stats: fitness
+	max: inf
+	min: 0.699318
+	avg: inf
+	stdev: -nan
+
+Generation: 34
+Elapsed time: 5
+Deme: 0
+Evaluations: 3500
+Stats: fitness
+	max: inf
+	min: 0.699318
+	avg: inf
+	stdev: -nan
+
+Generation: 35
+Elapsed time: 5
+Deme: 0
+Evaluations: 3600
+Stats: fitness
+	max: inf
+	min: 0.699318
+	avg: inf
+	stdev: -nan
+
+Generation: 36
+Elapsed time: 5
+Deme: 0
+Evaluations: 3700
+Stats: fitness
+	max: inf
+	min: 0.698575
+	avg: inf
+	stdev: -nan
+
+Generation: 37
+Elapsed time: 5
+Deme: 0
+Evaluations: 3800
+Stats: fitness
+	max: inf
+	min: 0.698575
+	avg: inf
+	stdev: -nan
+
+Generation: 38
+Elapsed time: 5
+Deme: 0
+Evaluations: 3900
+Stats: fitness
+	max: inf
+	min: 0.681017
+	avg: inf
+	stdev: -nan
+
+Generation: 39
+Elapsed time: 5
+Deme: 0
+Evaluations: 4000
+Stats: fitness
+	max: 1.48945
+	min: 0.681017
+	avg: 0.754318
+	stdev: 0.152156
+
+Generation: 40
+Elapsed time: 5
+Deme: 0
+Evaluations: 4100
+Stats: fitness
+	max: inf
+	min: 0.681017
+	avg: inf
+	stdev: -nan
+
+Generation: 41
+Elapsed time: 6
+Deme: 0
+Evaluations: 4200
+Stats: fitness
+	max: inf
+	min: 0.673118
+	avg: inf
+	stdev: -nan
+
+Generation: 42
+Elapsed time: 6
+Deme: 0
+Evaluations: 4300
+Stats: fitness
+	max: inf
+	min: 0.673118
+	avg: inf
+	stdev: -nan
+
+Generation: 43
+Elapsed time: 6
+Deme: 0
+Evaluations: 4400
+Stats: fitness
+	max: 1.58244
+	min: 0.671561
+	avg: 0.740278
+	stdev: 0.154921
+
+Generation: 44
+Elapsed time: 6
+Deme: 0
+Evaluations: 4500
+Stats: fitness
+	max: inf
+	min: 0.668833
+	avg: inf
+	stdev: -nan
+
+Generation: 45
+Elapsed time: 6
+Deme: 0
+Evaluations: 4600
+Stats: fitness
+	max: inf
+	min: 0.668833
+	avg: inf
+	stdev: -nan
+
+Generation: 46
+Elapsed time: 6
+Deme: 0
+Evaluations: 4700
+Stats: fitness
+	max: inf
+	min: 0.668536
+	avg: inf
+	stdev: -nan
+
+Generation: 47
+Elapsed time: 6
+Deme: 0
+Evaluations: 4800
+Stats: fitness
+	max: inf
+	min: 0.666072
+	avg: inf
+	stdev: -nan
+
+Generation: 48
+Elapsed time: 7
+Deme: 0
+Evaluations: 4900
+Stats: fitness
+	max: inf
+	min: 0.666072
+	avg: inf
+	stdev: -nan
+
+Generation: 49
+Elapsed time: 7
+Deme: 0
+Evaluations: 5000
+Stats: fitness
+	max: inf
+	min: 0.666072
+	avg: inf
+	stdev: -nan
+
+Generation: 50
+Elapsed time: 7
+Deme: 0
+Evaluations: 5100
+Stats: fitness
+	max: inf
+	min: 0.666072
+	avg: inf
+	stdev: -nan
+
+Generation: 51
+Elapsed time: 7
+Deme: 0
+Evaluations: 5200
+Stats: fitness
+	max: inf
+	min: 0.666072
+	avg: inf
+	stdev: -nan
+
+Generation: 52
+Elapsed time: 7
+Deme: 0
+Evaluations: 5300
+Stats: fitness
+	max: inf
+	min: 0.666072
+	avg: inf
+	stdev: -nan
+
+Generation: 53
+Elapsed time: 7
+Deme: 0
+Evaluations: 5400
+Stats: fitness
+	max: inf
+	min: 0.665901
+	avg: inf
+	stdev: -nan
+
+Generation: 54
+Elapsed time: 7
+Deme: 0
+Evaluations: 5500
+Stats: fitness
+	max: inf
+	min: 0.665901
+	avg: inf
+	stdev: -nan
+
+Generation: 55
+Elapsed time: 8
+Deme: 0
+Evaluations: 5600
+Stats: fitness
+	max: inf
+	min: 0.665102
+	avg: inf
+	stdev: -nan
+
+Generation: 56
+Elapsed time: 8
+Deme: 0
+Evaluations: 5700
+Stats: fitness
+	max: inf
+	min: 0.665102
+	avg: inf
+	stdev: -nan
+
+Generation: 57
+Elapsed time: 8
+Deme: 0
+Evaluations: 5800
+Stats: fitness
+	max: inf
+	min: 0.665102
+	avg: inf
+	stdev: -nan
+
+Generation: 58
+Elapsed time: 8
+Deme: 0
+Evaluations: 5900
+Stats: fitness
+	max: inf
+	min: 0.663707
+	avg: inf
+	stdev: -nan
+
+Generation: 59
+Elapsed time: 8
+Deme: 0
+Evaluations: 6000
+Stats: fitness
+	max: 2.8384
+	min: 0.663707
+	avg: 0.734892
+	stdev: 0.262746
+
+Generation: 60
+Elapsed time: 8
+Deme: 0
+Evaluations: 6100
+Stats: fitness
+	max: inf
+	min: 0.663707
+	avg: inf
+	stdev: -nan
+
+Generation: 61
+Elapsed time: 8
+Deme: 0
+Evaluations: 6200
+Stats: fitness
+	max: 1.58276
+	min: 0.662951
+	avg: 0.69658
+	stdev: 0.141257
+
+Generation: 62
+Elapsed time: 8
+Deme: 0
+Evaluations: 6300
+Stats: fitness
+	max: 1.58268
+	min: 0.662951
+	avg: 0.697067
+	stdev: 0.119628
+
+Generation: 63
+Elapsed time: 9
+Deme: 0
+Evaluations: 6400
+Stats: fitness
+	max: 1.59114
+	min: 0.662951
+	avg: 0.75418
+	stdev: 0.242159
+
+Generation: 64
+Elapsed time: 9
+Deme: 0
+Evaluations: 6500
+Stats: fitness
+	max: inf
+	min: 0.662951
+	avg: inf
+	stdev: -nan
+

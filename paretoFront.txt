@@ -1,0 +1,6 @@
+0.928797 1
+<Tree size="1">A </Tree>
+0.0245751 17
+<Tree size="17">- A - * + B 25 - 25 B + * A A - 25 A </Tree>
+0.0245751 11
+<Tree size="11">- * + B 25 - 25 B * A A </Tree>
