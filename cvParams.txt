@@ -1,0 +1,9 @@
+algorithm tsize 3
+genotype maxdepth 4 5
+genotype functionset "+ - * /" "+ - *"
+genotype terminalset "A B 25"
+registry population.size 20 30 50
+registry mutation.indprob 0.1 0.2 0.3
+registry term.stagnation 100
+registry term.maxgen 20
+registry term.fitnessval 0.01

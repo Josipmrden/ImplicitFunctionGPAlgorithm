@@ -36,6 +36,7 @@ void ParametersBuilder::writeParameters() {
         exit(1);
     }
 
+    deleteFile();
     std::string parameters = getParameters();
     ofstream parametersFile;
     parametersFile.open(this->parametersFileName);
@@ -67,10 +68,9 @@ void ParametersBuilder::addEntry(map<string, string> &node, string key, string v
 }
 
 void ParametersBuilder::fillDefault() {
+    setAlgorithm("SteadyStateTournament");
+    setGenotype("Tree");
     addRegistryEntry("randomizer.seed", "0");
-    addRegistryEntry("batch.repeats", "1");
-    addRegistryEntry("batch.singlemilestone", "0");
-    addRegistryEntry("batch.statsfile", "stats.txt");
     addRegistryEntry("log.filename", "log.txt");
     addRegistryEntry("log.level", "3");
     addRegistryEntry("milestone.filename", "m.txt");
@@ -103,8 +103,8 @@ string ParametersBuilder::getXml() {
 string ParametersBuilder::getGenotypeParametersXml() {
     string begin = "\t<Genotype>";
     string end = "\t</Genotype>";
-    string genotypeNameBegin = "\t\t<" + this->algorithmName + ">";
-    string genotypeNameEnd = "\t\t</" + this->algorithmName + ">";
+    string genotypeNameBegin = "\t\t<" + this->genotypeName + ">";
+    string genotypeNameEnd = "\t\t</" + this->genotypeName + ">";
     string genotypeParameters;
 
     auto it = genotypeNode.begin();
