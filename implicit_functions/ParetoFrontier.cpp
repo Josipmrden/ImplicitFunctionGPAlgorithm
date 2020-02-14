@@ -28,7 +28,9 @@ void ParetoFrontier::updateParetoFront(Tree::Tree* tree, double newTreeFitness, 
                 worseThanAnyone = true;
             }
         } else {
-            hasSame = true;
+            if (representation == solution.representation) {
+                hasSame = true;
+            }
         }
         newParetoFront.push_back(solution);
     }
@@ -41,7 +43,15 @@ void ParetoFrontier::updateParetoFront(Tree::Tree* tree, double newTreeFitness, 
     this->_paretoFront = newParetoFront;
 }
 
+
+bool compareByLength(ParetoSolution &a, ParetoSolution &b)
+{
+    return a.treeSize < b.treeSize;
+}
+
 void ParetoFrontier::writeParetoFront() {
+    std::sort(this->_paretoFront.begin(), this->_paretoFront.end(), compareByLength);
+
     std::ofstream paretoFrontFile;
     paretoFrontFile.open (this->_paretoFrontFile);
 
