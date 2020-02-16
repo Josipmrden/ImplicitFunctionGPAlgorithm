@@ -35,8 +35,6 @@ bool dominates(ParetoSolution one, ParetoSolution two)
         return true;
     }
 
-
-
     return false;
 }
 
@@ -118,10 +116,10 @@ void ParetoFrontier::writeParetoFront()
 
 ParetoSolution ParetoFrontier::createNewSolution(double fitness, int size, std::string representation)
 {
-
     ParetoSolution solution;
     solution.fitness = round(fitness * this->multiplier) / this->multiplier;
     solution.treeSize = size;
     solution.representation = std::move(representation);
+
     return solution;
 }
