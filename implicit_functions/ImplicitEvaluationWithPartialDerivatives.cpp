@@ -83,10 +83,13 @@ FitnessP ImplicitEvaluationWithPartialDerivatives::evaluate(IndividualP individu
     evalNo++;
     //feenableexcept(FE_INVALID | FE_OVERFLOW);
     // we try to minimize the function value, so we use FitnessMin fitness (for minimization problems)
+
     FitnessP fitness (new FitnessMin);
 
     // get the genotype we defined in the configuration file
     Tree::Tree* tree = (Tree::Tree*) individual->getGenotype().get();
+
+    double equalsZeroFitness = 0;
 
     int sampleSize = _domain.size();
     int variablesSize = _domain[0].size();
@@ -102,6 +105,7 @@ FitnessP ImplicitEvaluationWithPartialDerivatives::evaluate(IndividualP individu
         }
         double resultStill;
         tree->execute(&resultStill);
+        equalsZeroFitness += abs(resultStill);
 
         std::vector<double> derivationByVariables;
         //point after current
@@ -150,7 +154,8 @@ FitnessP ImplicitEvaluationWithPartialDerivatives::evaluate(IndividualP individu
         double b = derivationByVariables[0];
         double difference;
 
-        if (isnan(a) || isnan(b)) {
+        if (isnan(a) || isnan(b))
+        {
             difference = log(1 + fabs(dataDerivative));
         } else if (a == 0.0 && b == 0.0) {
             difference = log(1 + fabs(dataDerivative));

@@ -16,11 +16,13 @@ public:
     ParetoFrontier(std::string basicString);
     void writeParetoFront();
     void updateParetoFront(Tree::Tree* tree, double newTreeFitness, const std::string& representation);
-    static ParetoSolution createNewSolution(double fitness, int size, std::string representation);
+    ParetoSolution createNewSolution(double fitness, int size, std::string representation);
 
 private:
     std::vector<ParetoSolution> _paretoFront;
     std::string _paretoFrontFile;
+    int precision = 6;
+    double multiplier;
 };
 
 
