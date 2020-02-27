@@ -1,5 +1,5 @@
 #include <ecf/ECF.h>
-#include "PithagoraSymbRegEvalOp.h"
+#include "examples/SymbRegExercise/simple_regression/PithagoraSymbRegEvalOp.h"
 
 //run with parameters (file from program arguments)
 int main(int argc, char **argv)
