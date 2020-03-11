@@ -8,13 +8,9 @@
 #include <string>
 #include <vector>
 #include <math.h>
+#include <examples/SymbRegExercise/utils/Point.h>
+
 using namespace std;
-
-struct pt {
-    vector<double> coordinates;
-};
-
-typedef struct pt Point;
 
 struct np {
     Point mainPoint;

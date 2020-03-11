@@ -1,6 +1,6 @@
 #include <ecf/ECF.h>
-#include "ImplicitEvaluationWithPartialDerivatives.h"
-#include "ParetoFrontier.h"
+#include "../implicit_functions/ImplicitEvaluationWithPartialDerivatives.h"
+#include "../implicit_functions/ParetoFrontier.h"
 #include <ecf/tree/Tree.h>
 typedef std::string String;
 

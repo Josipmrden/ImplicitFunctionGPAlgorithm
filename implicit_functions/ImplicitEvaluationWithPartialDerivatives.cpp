@@ -89,11 +89,10 @@ FitnessP ImplicitEvaluationWithPartialDerivatives::evaluate(IndividualP individu
     // get the genotype we defined in the configuration file
     Tree::Tree* tree = (Tree::Tree*) individual->getGenotype().get();
 
-    /*
+
     std::string izraz = "<Tree size=\"9\">- + * A A * B B 25</Tree>";
     XMLNode xTree = XMLNode::parseString(izraz.c_str());
     tree->read(xTree);
-     */
 
     double equalsZeroFitness = 0;
 
