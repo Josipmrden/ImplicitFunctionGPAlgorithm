@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<ECF>
+	<Algorithm>
+		<SteadyStateTournament>
+		    <Entry key="tsize">5</Entry>
+		</SteadyStateTournament>
+	</Algorithm>
+	<Genotype>
+		<Tree>
+			<Entry key="maxdepth">3</Entry>
+			<Entry key="functionset">+ - *</Entry>
+			<Entry key="terminalset">A B 25</Entry>
+		</Tree>
+	</Genotype>
+    <Genotype>
+        <Tree>
+            <Entry key="maxdepth">3</Entry>
+            <Entry key="functionset">+ - *</Entry>
+            <Entry key="terminalset">A B 25</Entry>
+        </Tree>
+    </Genotype>
+	<Registry>
+		<Entry key="batch.repeats">1</Entry>
+		<Entry key="batch.singlemilestone">0</Entry>
+		<Entry key="batch.statsfile">stats.txt</Entry>
+		<Entry key="log.filename">log.txt</Entry>
+		<Entry key="log.level">3</Entry>
+		<Entry key="milestone.filename">m.txt</Entry>
+		<Entry key="randomizer.seed">0</Entry>
+		<Entry key="population.size">100</Entry>
+		<Entry key="mutation.indprob">0.3</Entry>
+		<Entry key="term.stagnation">100</Entry>
+		<Entry key="term.fitnessval">0</Entry>
+		<Entry key="term.maxgen">500</Entry>
+	</Registry>
+</ECF>
+
