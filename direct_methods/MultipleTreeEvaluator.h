@@ -17,17 +17,17 @@ class MultipleTreeEvaluator : public EvaluateOp
 {
 private:
     string _datasetFileName;
-    string _functionsOperator;
     vector<Point> _points;
     vector<string> _variables;
     bool _initializedVariables;
     StateP _state;
 public:
-    MultipleTreeEvaluator(StateP state, string datasetFileName, string functionsOperator);
+    MultipleTreeEvaluator(StateP state, string datasetFileName);
     bool containsAllVariables(IndividualP individual);
     bool isLowStdevOnRandomValues(IndividualP individual);
     void initializeVariables(IndividualP individual);
-    double getResult(IndividualP individual, Point p);
+    double getResult(IndividualP individual, Point p, string op);
+    double getFitnessFromPoints(IndividualP individual, vector<Point> points);
     FitnessP evaluate(IndividualP individual);
 };
 

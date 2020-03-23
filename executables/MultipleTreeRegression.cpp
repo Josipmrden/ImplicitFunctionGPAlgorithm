@@ -13,13 +13,12 @@ int main(int argc, char **argv)
 {
     string datasetFileName = argv[2];
     string paretoFrontFileName = argv[3];
-    string functionsOperator = argv[4];
 
     StateP state (new State); //init on stack
     TreeP tree (new Tree::Tree);
     state->addGenotype(tree);
 
-    auto* multipleTreeEvalOp = new MultipleTreeEvaluator(state, datasetFileName, functionsOperator);
+    auto* multipleTreeEvalOp = new MultipleTreeEvaluator(state, datasetFileName);
 
     state->setEvalOp(multipleTreeEvalOp);
     state->initialize(argc, argv);

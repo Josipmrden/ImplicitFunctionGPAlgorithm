@@ -4,11 +4,10 @@
 #include "MultipleTreeEvaluator.h"
 #include "../utils/MathFunctions.h"
 
-MultipleTreeEvaluator::MultipleTreeEvaluator(StateP state, string datasetFileName, string functionsOperator)
+MultipleTreeEvaluator::MultipleTreeEvaluator(StateP state, string datasetFileName)
 {
     this->_state = state;
     this->_datasetFileName = datasetFileName;
-    this->_functionsOperator = functionsOperator;
     this->_initializedVariables = false;
 
     ifstream inputFileStream(this->_datasetFileName);
@@ -89,7 +88,7 @@ void MultipleTreeEvaluator::initializeVariables(IndividualP individual)
 
 bool MultipleTreeEvaluator::isLowStdevOnRandomValues(IndividualP individual)
 {
-    vector<double> results;
+    vector<Point> randomPoints;
     for (int i = 0; i < 10; i++)
     {
         Point p;
@@ -99,17 +98,61 @@ bool MultipleTreeEvaluator::isLowStdevOnRandomValues(IndividualP individual)
             p.coordinates.push_back(randomValue);
         }
 
-        double result = getResult(individual, p);
-        results.push_back(result);
+        randomPoints.push_back(p);
     }
 
-    double stdev = getStdev(results);
+
+    double stdev = getFitnessFromPoints(individual, randomPoints);
 
     return stdev < 10E-2;
 
 }
 
-double MultipleTreeEvaluator::getResult(IndividualP individual, Point p)
+double MultipleTreeEvaluator::getFitnessFromPoints(IndividualP individual, vector<Point> points)
+{
+    vector<double> additionResults;
+    vector<double> subtractionResults;
+    vector<double> multiplicationResults;
+    vector<double> divisionResults;
+
+    for (int i = 0; i < points.size(); i++)
+    {
+        Point p = points[i];
+        double result1 = getResult(individual, p, "+");
+        double result2 = getResult(individual, p, "-");
+        double result3 = getResult(individual, p, "*");
+        double result4 = getResult(individual, p, "/");
+
+        additionResults.push_back(result1);
+        subtractionResults.push_back(result2);
+        multiplicationResults.push_back(result3);
+        divisionResults.push_back(result4);
+    }
+
+    double stdev1 = getStdev(additionResults);
+    double stdev2 = getStdev(subtractionResults);
+    double stdev3 = getStdev(multiplicationResults);
+    double stdev4 = getStdev(divisionResults);
+
+    double minimalStdev = stdev1;
+    if (stdev2 < minimalStdev)
+    {
+        minimalStdev = stdev2;
+    }
+    if (stdev3 < minimalStdev)
+    {
+        minimalStdev = stdev3;
+    }
+    if (stdev4 < minimalStdev)
+    {
+        minimalStdev = stdev4;
+    }
+
+    return minimalStdev;
+}
+
+
+double MultipleTreeEvaluator::getResult(IndividualP individual, Point p, string op)
 {
     Tree::Tree* first = (Tree::Tree*) individual->getGenotype(0).get();
     Tree::Tree* second = (Tree::Tree*) individual->getGenotype(1).get();
@@ -126,25 +169,25 @@ double MultipleTreeEvaluator::getResult(IndividualP individual, Point p)
     first->execute(&firstResult);
     second->execute(&secondResult);
 
-    if (this->_functionsOperator == "+")
+    if (op == "+")
     {
         return firstResult + secondResult;
     }
-    else if (this->_functionsOperator == "-")
+    else if (op == "-")
     {
         return firstResult - secondResult;
     }
-    else if (this->_functionsOperator == "*")
+    else if (op == "*")
     {
         return firstResult * secondResult;
     }
-    else if (this->_functionsOperator == "/")
+    else if (op == "/")
     {
         return firstResult / secondResult;
     }
     else return 0;
 }
-
+//figure out which is the best
 
 FitnessP MultipleTreeEvaluator::evaluate(IndividualP individual)
 {
@@ -170,16 +213,9 @@ FitnessP MultipleTreeEvaluator::evaluate(IndividualP individual)
         return fitness;
     }
 
-    vector<double> results;
-    for (int i = 0; i < this->_points.size(); i++)
-    {
-        Point p = this->_points[i];
-        double result = getResult(individual, p);
-        results.push_back(result);
-    }
+    double minimalStdev = getFitnessFromPoints(individual, this->_points);
 
-    double stdev = getStdev(results);
+    fitness->setValue(minimalStdev);
 
-    fitness->setValue(stdev);
     return fitness;
 }
