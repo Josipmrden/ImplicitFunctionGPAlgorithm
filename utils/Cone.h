@@ -6,7 +6,7 @@
 #define SYMBREGEXERCISE_CONE_H
 
 
-#include "Point.h"
+#include <examples/SymbRegExercise/utils/Point.h>
 
 extern double cone_epsylon;
 

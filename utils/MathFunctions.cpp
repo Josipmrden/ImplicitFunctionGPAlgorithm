@@ -1,11 +1,7 @@
 //
 // Created by josipmrden on 27. 02. 2020..
 //
-
 #include "MathFunctions.h"
-#include <vector>
-#include <math.h>
-#include <random>
 
 using namespace std;
 

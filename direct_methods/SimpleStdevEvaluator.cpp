@@ -1,8 +1,11 @@
 //
 // Created by josipmrden on 27. 02. 2020..
 //
+#include <cmath>
+#include <ecf/ECF.h>
+#include <examples/SymbRegExercise/utils/MathFunctions.h>
+#include <examples/SymbRegExercise/implicit_functions/SymbolicRegressionUtil.h>
 #include "SimpleStdevEvaluator.h"
-#include "../utils/MathFunctions.h"
 
 SimpleStdevEvaluator::SimpleStdevEvaluator(StateP state, string datasetFileName)
 {
@@ -39,97 +42,23 @@ SimpleStdevEvaluator::SimpleStdevEvaluator(StateP state, string datasetFileName)
     }
 }
 
-bool SimpleStdevEvaluator::containsAllVariables(IndividualP individual)
-{
-    Tree::Tree* tree = (Tree::Tree*) individual->getGenotype().get();
-    string expression = tree->toString();
-
-    for (int i = 0; i < this->_variables.size(); i++)
-    {
-        string substringToSearch = " " + this->_variables[i] + " ";
-        if (expression.find(substringToSearch) == string::npos)
-        {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-void SimpleStdevEvaluator::initializeVariables(IndividualP individual)
-{
-    Tree::Tree* tree = (Tree::Tree*) individual->getGenotype().get();
-    voidP val = tree->getParameterValue(this->_state, "terminalset");
-    std::string terminals = *((std::string*) val.get());
-
-    istringstream lineStream(terminals);
-
-    while (true)
-    {
-        string variableString;
-        getline(lineStream, variableString, ' ');
-
-        if (variableString.empty())
-        {
-            break;
-        }
-
-        if (variableString.size() == 1 && isalpha(variableString[0]))
-        {
-            this->_variables.push_back(variableString);
-        }
-    }
-}
-
-bool SimpleStdevEvaluator::isLowStdevOnRandomValues(IndividualP individual)
-{
-    Tree::Tree* tree = (Tree::Tree*) individual->getGenotype().get();
-
-    vector<double> results;
-    for (int i = 0; i < 10; i++)
-    {
-        double result;
-        for (int j = 0; j < this->_variables.size(); j++)
-        {
-            double randomValue = this->_state->getRandomizer()->getRandomDouble();
-            tree->setTerminalValue(this->_variables[j], &randomValue);
-        }
-
-        tree->execute(&result);
-        results.push_back(result);
-    }
-
-    double stdev = getStdev(results);
-
-    return stdev < 10E-6;
-
-}
-
 FitnessP SimpleStdevEvaluator::evaluate(IndividualP individual)
 {
+    Tree::Tree* tree = getTree(individual, "");
     FitnessP fitness (new FitnessMin);
 
-    if (!this->_initializedVariables)
+    if (!_initializedVariables)
     {
-        this->initializeVariables(individual);
-        this->_initializedVariables = true;
+        _variables = ::getAlgorithmVariables(tree, _state);
+        _initializedVariables = true;
     }
 
-    if (!containsAllVariables(individual))
+    if (!containsAllVariables(tree, _variables) || isLowStdevOnRandomValues(tree, _state, _variables))
     {
-        int domainSize = this->_points.size();
+        int domainSize = _points.size();
         fitness->setValue(domainSize * domainSize * domainSize);
         return fitness;
     }
-
-    if (isLowStdevOnRandomValues(individual))
-    {
-        int domainSize = this->_points.size();
-        fitness->setValue(domainSize * domainSize * domainSize);
-        return fitness;
-    }
-
-    Tree::Tree* tree = (Tree::Tree*) individual->getGenotype().get();
 
     vector<double> results;
     for (int i = 0; i < this->_points.size(); i++)

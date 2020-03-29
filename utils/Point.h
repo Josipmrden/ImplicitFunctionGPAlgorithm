@@ -13,4 +13,5 @@ class Point
 {
 public:
     vector<double> coordinates;
+    Point getEpsylonedPoint(int index, double epsylon);
 };

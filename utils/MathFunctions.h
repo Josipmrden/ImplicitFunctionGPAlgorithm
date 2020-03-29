@@ -8,6 +8,8 @@
 #endif //SYMBREGEXERCISE_MATHFUNCTIONS_H
 
 #include <vector>
+#include <math.h>
+#include <random>
 using namespace std;
 
 double getAverage(vector<double> values);

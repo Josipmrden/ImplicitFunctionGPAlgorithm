@@ -7,8 +7,6 @@
 
 #include <string>
 #include <vector>
-#include <ecf/ECF.h>
-#include <examples/SymbRegExercise/utils/Point.h>
 
 using namespace std;
 
@@ -23,9 +21,6 @@ private:
     StateP _state;
 public:
     SimpleStdevEvaluator(StateP state, string datasetFileName);
-    bool containsAllVariables(IndividualP individual);
-    bool isLowStdevOnRandomValues(IndividualP individual);
-    void initializeVariables(IndividualP individual);
     FitnessP evaluate(IndividualP individual);
 };
 
