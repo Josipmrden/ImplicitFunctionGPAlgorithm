@@ -89,11 +89,6 @@ FitnessP ImplicitEvaluationWithPartialDerivatives::evaluate(IndividualP individu
     // get the genotype we defined in the configuration file
     Tree::Tree* tree = (Tree::Tree*) individual->getGenotype().get();
 
-
-    std::string izraz = "<Tree size=\"9\">- + * A A * B B 25</Tree>";
-    XMLNode xTree = XMLNode::parseString(izraz.c_str());
-    tree->read(xTree);
-
     double equalsZeroFitness = 0;
 
     int sampleSize = _domain.size();
@@ -143,15 +138,6 @@ FitnessP ImplicitEvaluationWithPartialDerivatives::evaluate(IndividualP individu
             }
             derivationByVariables.push_back(derivative);
         }
-
-        /*
-        double first = calculate(domain[i][0] + epsylon, domain[i][1]);
-        double second = calculate(domParetoFrontier::ain[i][0], domain[i][1] + epsylon);
-        first = (first - resultStill) / epsylon;
-        second = (second - resultStill) / epsylon;
-        derivationByVariables.push_back(first);
-        derivationByVariables.push_back(second);
-        */
 
         //calculate derivatives
         double dataDerivative = _partialDerivatives[i];

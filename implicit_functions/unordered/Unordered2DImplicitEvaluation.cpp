@@ -1,47 +1,21 @@
 #include <cmath>
 #include <ecf/ECF.h>
+#include <examples/SymbRegExercise/utils/MathFunctions.h>
+#include <examples/SymbRegExercise/implicit_functions/SymbolicRegressionUtil.h>
 #include "Unordered2DImplicitEvaluation.h"
-
 using namespace std;
 
-double unordered_epsylon = 10e-5;
-
 Unordered2DImplicitEvaluation::Unordered2DImplicitEvaluation(string datasetFileName, ParetoFrontier* paretoFrontier, StateP state) {
-    this->_state = state;
-    this->_datasetFileName = datasetFileName;
-    this->_paretoFrontier = paretoFrontier;
-    this->_initializedVariables = false;
-}
-
-void Unordered2DImplicitEvaluation::initializeVariables(IndividualP individual)
-{
-    Tree::Tree* tree = (Tree::Tree*) individual->getGenotype().get();
-    voidP val = tree->getParameterValue(this->_state, "terminalset");
-    std::string terminals = *((std::string*) val.get());
-
-    istringstream lineStream(terminals);
-
-    while (true)
-    {
-        string variableString;
-        getline(lineStream, variableString, ' ');
-
-        if (variableString.empty())
-        {
-            break;
-        }
-
-        if (variableString.size() == 1 && isalpha(variableString[0]))
-        {
-            this->_variables.push_back(variableString);
-        }
-    }
+    _state = state;
+    _datasetFileName = datasetFileName;
+    _paretoFrontier = paretoFrontier;
+    _initializedVariables = false;
 }
 
 // called only once, before the evolution � generates training data
 bool Unordered2DImplicitEvaluation::initialize(StateP state)
 {
-    std::ifstream inputFileStream(this->_datasetFileName);
+    std::ifstream inputFileStream(_datasetFileName);
     int sampleSize;
     int varCount;
 
@@ -90,95 +64,51 @@ bool Unordered2DImplicitEvaluation::initialize(StateP state)
         points.push_back(p);
     }
 
-    this->_points = points;
-    this->_cones = cones;
+    _points = points;
+    _cones = cones;
 }
 
 FitnessP Unordered2DImplicitEvaluation::evaluate(IndividualP individual)
 {
-    //feenableexcept(FE_INVALID | FE_OVERFLOW);
-    if (!this->_initializedVariables)
+    FitnessP fitness (new FitnessMin);
+    Tree::Tree* tree = getTree(individual, "");
+    double sampleSize = _points.size();
+    double punishment = sampleSize * sampleSize * sampleSize;
+
+    if (!_initializedVariables)
     {
-        this->initializeVariables(individual);
-        this->_initializedVariables = true;
+        _variables = getAlgorithmVariables(tree, _state);
+        _initializedVariables = true;
     }
 
-    FitnessP fitness (new FitnessMin);
-
-    // get the genotype we defined in the configuration file
-    Tree::Tree* tree = (Tree::Tree*) individual->getGenotype().get();
-
-    double equalsZeroFitness = 0;
-
-    int sampleSize = _points.size();
-
-    double fitnessValue = 0.0;
-    double fitnessDerivativeValue = 0.0;
+    double totalFitness = 0.0;
     for(uint i = 0; i < sampleSize; i++) {
         Point point = _points[i];
+
         //calculate non moved value
-        for (uint j = 0; j < _variables.size(); j++) {
-            double value = point.coordinates[j];
-            tree->setTerminalValue(_variables[j], &value);
-        }
-        double resultStill;
-        tree->execute(&resultStill);
-        equalsZeroFitness += fabs(resultStill);
+        double notMovedResult = executeTree(tree, _variables, point);
 
         vector<double> derivationByVariables;
         //point after current
         for (uint j = 0; j < _variables.size(); j++) {
-            double eps = unordered_epsylon;
-            double derivative;
-            while (true) {
-                for (uint k = 0; k < _variables.size(); k++) {
-                    double value = point.coordinates[k];
-                    if (j == k) {
-                        value += eps;
-                    }
-                    tree->setTerminalValue(_variables[k], &value);
-                }
-                double resultAfter;
-                tree->execute(&resultAfter);
-                derivative = (resultAfter - resultStill) / eps;
-                if (derivative == 0.0) {
-                    eps *= 10;
-                    if (eps == 1) {
-                        break;
-                    }
-                    continue;
-                }
-                break;
-            }
+            double movedResult = executeTreeForMovedPointFast(tree, _variables, point, j, epsylon);
+            double derivative = (movedResult - notMovedResult) / epsylon;
             derivationByVariables.push_back(derivative);
         }
 
         //calculate derivatives
         double dataDerivative = this->_cones[i].getDerivation(_points[i]);
-        double a = derivationByVariables[1];
-        double b = derivationByVariables[0];
-        double difference;
+        double dy = derivationByVariables[1];
+        double dx = derivationByVariables[0];
+        double pointFitness = getFitnessFromDerivation(dataDerivative, dy, dx, punishment);
 
-        if (isnan(a) || isnan(b))
-        {
-            difference = log(1 + fabs(dataDerivative));
-        } else if (a == 0.0 && b == 0.0) {
-            difference = log(1 + fabs(dataDerivative));
-        } else {
-            double derivationAssumed = - a / b;
-            difference = log(1 + fabs(derivationAssumed - dataDerivative));
-        }
-
-        fitnessDerivativeValue += difference;
+        totalFitness += pointFitness;
     }
 
-    fitnessValue += fitnessDerivativeValue;
-    fitnessValue += log(1 + equalsZeroFitness);
-    fitnessValue /= _points.size();
+    totalFitness /= _points.size();
+    fitness->setValue(totalFitness);
 
-    fitness->setValue(fitnessValue);
-
-    _paretoFrontier->updateParetoFront(tree, fitnessValue, tree->toString());
+    _paretoFrontier->updateParetoFront(tree, totalFitness, tree->toString());
 
     return fitness;
 }

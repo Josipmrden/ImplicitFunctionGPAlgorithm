@@ -1,13 +1,14 @@
 #ifndef SymbRegEvalOp_h
 #define SymbRegEvalOp_h
 
+
 #include <string>
 #include <vector>
 #include <examples/SymbRegExercise/utils/Cone.h>
+#include <examples/SymbRegExercise/utils/MultiDimEllipse.h>
 #include "../ParetoFrontier.h"
 
 extern vector<string> availableLetters;
-extern double unordered_epsylon;
 using namespace std;
 
 class Unordered2DImplicitEvaluation : public EvaluateOp
@@ -20,11 +21,11 @@ private:
     vector<string> _variables;
     bool _initializedVariables;
     StateP _state;
+    double epsylon = 10E-5;
 public:
     Unordered2DImplicitEvaluation(string datasetFileName, ParetoFrontier* paretoFrontier, StateP state);
     bool initialize(StateP state);
     FitnessP evaluate(IndividualP individual);
-    void initializeVariables(IndividualP individual);
 };
 
 #endif

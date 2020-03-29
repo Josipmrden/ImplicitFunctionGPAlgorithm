@@ -18,7 +18,7 @@ private:
     ParetoFrontier* _paretoFrontier;
 public:
     ImplicitEvaluationWithPartialDerivatives(std::string datasetFileName, ParetoFrontier* paretoFrontier);
-    bool initialize(StateP);
+    bool initialize(StateP state);
     FitnessP evaluate(IndividualP individual);
 };
 
