@@ -108,7 +108,7 @@ FitnessP Unordered2DImplicitEvaluation::evaluate(IndividualP individual)
     totalFitness /= _points.size();
     fitness->setValue(totalFitness);
 
-    _paretoFrontier->updateParetoFront(tree, totalFitness, tree->toString());
+    _paretoFrontier->updateParetoFront(tree, totalFitness);
 
     return fitness;
 }

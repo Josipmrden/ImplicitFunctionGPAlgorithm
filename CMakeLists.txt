@@ -3,12 +3,6 @@ project(SymbRegExercise)
 
 set(CMAKE_CXX_STANDARD 11)
 
-find_package(Boost)
-if(Boost_FOUND)
-    include_directories(${Boost_INCLUDE_DIRS})
-endif()
-
-#set(SOURCE_FILES pithagorasExplicitSymbolicRegression.cpp PithagoraSymbRegEvalOp.cpp PithagoraSymbRegEvalOp.h)
 set(SOURCE_FILES
         implicit_functions/ImplicitEvaluationWithPartialDerivatives.cpp
         implicit_functions/ImplicitEvaluationWithPartialDerivatives.h
@@ -34,9 +28,18 @@ set(SOURCE_FILES
         implicit_functions/unordered/UnorderedMultiDimImplicitEvaluation.h
         utils/MultiDimEllipse.cpp
         utils/MultiDimEllipse.h
-        executables/UnorderedMultiDimSymbolicRegression.cpp
         implicit_functions/SymbolicRegressionUtil.cpp
-        implicit_functions/SymbolicRegressionUtil.h)
+        implicit_functions/SymbolicRegressionUtil.h
+        implicit_functions/unordered/UnorderedMultiDimMultiGenEval.cpp
+        implicit_functions/unordered/UnorderedMultiDimMultiGenEval.h
+        utils/primitives/Exp.h
+        utils/primitives/Sqrt.h
+        executables/UnorderedMultiDimMultiGenRegression.cpp)
+
+find_package(Boost)
+if(Boost_FOUND)
+    include_directories(${Boost_INCLUDE_DIRS})
+endif()
 
 include_directories(../../)
 add_executable(SymbRegExercise ${SOURCE_FILES})

@@ -52,16 +52,12 @@ bool worseThan(ParetoSolution one, ParetoSolution two)
     return true;
 }
 
-void ParetoFrontier::updateParetoFront(Tree::Tree* tree, double newTreeFitness, const std::string& representation)
+void ParetoFrontier::tryAddingNewSolutionToFront(ParetoSolution potential)
 {
-    int newTreeSize = tree->size();
     std::vector<ParetoSolution> newParetoFront;
-
     bool dominatedAny = false;
     bool worseThanAnyone = false;
     bool hasSame = false;
-
-    ParetoSolution potential = createNewSolution(newTreeFitness, newTreeSize, representation);
 
     for (const auto& solution : this->_paretoFront)
     {
@@ -94,6 +90,30 @@ void ParetoFrontier::updateParetoFront(Tree::Tree* tree, double newTreeFitness, 
     this->_paretoFront = newParetoFront;
 }
 
+void ParetoFrontier::updateParetoFront(Tree::Tree* tree, double newTreeFitness)
+{
+    int newTreeSize = tree->size();
+    string representation = tree->toString();
+    ParetoSolution potential = createNewSolution(newTreeFitness, newTreeSize, 1, representation);
+
+    this->tryAddingNewSolutionToFront(potential);
+}
+
+void ParetoFrontier::updateParetoFront(vector<Tree::Tree *> trees, double newTreeFitness)
+{
+    int totalTreeSize = 0;
+    string representation = "";
+
+    for (Tree::Tree* tree : trees)
+    {
+        totalTreeSize += tree->size();
+        representation += tree->toString();
+    }
+
+    ParetoSolution potential = createNewSolution(newTreeFitness, totalTreeSize, trees.size(), representation);
+    this->tryAddingNewSolutionToFront(potential);
+}
+
 bool compareByLength(ParetoSolution &a, ParetoSolution &b)
 {
     return a.treeSize < b.treeSize;
@@ -108,17 +128,19 @@ void ParetoFrontier::writeParetoFront()
 
     for (const auto& solution : this->_paretoFront)
     {
-        paretoFrontFile << solution.fitness << " " << solution.treeSize << " " << solution.representation;
+        paretoFrontFile << solution.fitness << ";" << solution.treeSize << ";" << solution.noTrees << endl;
+        paretoFrontFile << solution.representation;
     }
 
     paretoFrontFile.close();
 }
 
-ParetoSolution ParetoFrontier::createNewSolution(double fitness, int size, std::string representation)
+ParetoSolution ParetoFrontier::createNewSolution(double fitness, int size, int noTrees, std::string representation)
 {
     ParetoSolution solution;
     solution.fitness = round(fitness * this->multiplier) / this->multiplier;
     solution.treeSize = size;
+    solution.noTrees = noTrees;
     solution.representation = std::move(representation);
 
     return solution;

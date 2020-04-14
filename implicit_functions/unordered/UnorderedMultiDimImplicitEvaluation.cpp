@@ -64,7 +64,7 @@ bool UnorderedMultiDimImplicitEvaluation::initialize(StateP state)
 
 FitnessP UnorderedMultiDimImplicitEvaluation::evaluate(IndividualP individual)
 {
-    Tree::Tree* tree = getTree(individual, "");
+    Tree::Tree* tree = getTree(individual, "<Tree size=\"13\">- 25 + * X X + * Y Y * Z Z</Tree>");
 
     if (!_initializedVariables)
     {
@@ -117,7 +117,7 @@ FitnessP UnorderedMultiDimImplicitEvaluation::evaluate(IndividualP individual)
     totalFitness /= _points.size();
     fitness->setValue(totalFitness);
 
-    _paretoFrontier->updateParetoFront(tree, totalFitness, tree->toString());
+    _paretoFrontier->updateParetoFront(tree, totalFitness);
 
     return fitness;
 }

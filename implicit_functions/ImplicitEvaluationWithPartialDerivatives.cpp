@@ -164,7 +164,7 @@ FitnessP ImplicitEvaluationWithPartialDerivatives::evaluate(IndividualP individu
 
     fitness->setValue(fitnessValue);
 
-    _paretoFrontier->updateParetoFront(tree, fitnessValue, tree->toString());
+    _paretoFrontier->updateParetoFront(tree, fitnessValue);
 
     return fitness;
 }

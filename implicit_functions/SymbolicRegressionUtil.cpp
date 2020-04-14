@@ -4,12 +4,25 @@
 
 #include "SymbolicRegressionUtil.h"
 
+//"<Tree size=\"13\">- 25 + * X X + * Y Y * Z Z</Tree>"; - how to write a solution
+
 Tree::Tree* getTree(IndividualP individual, string customIndividual)
 {
     Tree::Tree* tree = (Tree::Tree*) individual->getGenotype().get();
     if (!customIndividual.empty())
     {
-        //std::string izraz = "<Tree size=\"13\">- 25 + * X X + * Y Y * Z Z</Tree>";
+        XMLNode xTree = XMLNode::parseString(customIndividual.c_str());
+        tree->read(xTree);
+    }
+
+    return tree;
+}
+
+Tree::Tree* getTreeAtIndex(IndividualP individual, string customIndividual, int index)
+{
+    Tree::Tree* tree = (Tree::Tree*) individual->getGenotype(index).get();
+    if (!customIndividual.empty())
+    {
         XMLNode xTree = XMLNode::parseString(customIndividual.c_str());
         tree->read(xTree);
     }
@@ -66,6 +79,27 @@ double executeTreeForMovedPointFast(Tree::Tree* tree, vector<string> variables, 
     return evaluation;
 }
 
+double calculateResult2Trees(double result1, double result2, string operation)
+{
+    if (operation == "+")
+    {
+        return result1 + result2;
+    }
+    else if (operation == "-")
+    {
+        return result1 - result2;
+    }
+    else if (operation == "*")
+    {
+        return result1 + result2;
+    }
+    else
+    {
+        return result1 / result2;
+    }
+}
+
+
 vector<string> getAlgorithmVariables(Tree::Tree* tree, StateP state)
 {
     vector<string> variables;
@@ -93,6 +127,47 @@ vector<string> getAlgorithmVariables(Tree::Tree* tree, StateP state)
     return variables;
 }
 
+vector<string> getAllVariablesWithinTrees(vector<Tree::Tree*> trees, StateP state)
+{
+    set<string> finalVariables;
+
+    for (int i = 0; i < trees.size(); i++)
+    {
+        vector<string> partialVariables = getAlgorithmVariables(trees[i], state);
+        for (int j = 0; j < partialVariables.size(); j++)
+        {
+            finalVariables.insert(partialVariables[j]);
+        }
+    }
+
+    vector<string> resultingVariables(finalVariables.begin(), finalVariables.end());
+
+    return resultingVariables;
+}
+
+vector<vector<string>> getVariablesPerTree(vector<Tree::Tree*> trees, StateP state)
+{
+    vector<vector<string>> variablesPerTree;
+    for (int i = 0; i < trees.size(); i++)
+    {
+        vector<string> partialVariables = getAlgorithmVariables(trees[i], state);
+        variablesPerTree.push_back(partialVariables);
+    }
+
+    return variablesPerTree;
+}
+
+bool isSubstringInTree(Tree::Tree* tree, string variableSubstring)
+{
+    string expression = tree->toString();
+    if (expression.find(variableSubstring) == string::npos)
+    {
+        return false;
+    }
+
+    return true;
+}
+
 bool containsAllVariables(Tree::Tree* tree, vector<string> variables)
 {
     string expression = tree->toString();
@@ -105,6 +180,31 @@ bool containsAllVariables(Tree::Tree* tree, vector<string> variables)
             return false;
         }
     }
+    return true;
+}
+
+bool containsAllVariables(vector<Tree::Tree*> trees, vector<string> variables)
+{
+    for (int i = 0, size = variables.size(); i < size; i++)
+    {
+        string variableSubstring = " " + variables[i] + " ";
+        bool found = false;
+
+        for (int j = 0; j < trees.size(); j++)
+        {
+            if (isSubstringInTree(trees[j], variableSubstring))
+            {
+                found = true;
+                break;
+            }
+        }
+
+        if (!found)
+        {
+            return false;
+        }
+    }
+
     return true;
 }
 
@@ -129,6 +229,56 @@ bool isLowStdevOnRandomValues(Tree::Tree* tree, StateP state, vector<string> var
     double stdev = getStdev(results);
 
     return stdev < 10E-6;
+}
+
+vector<Point> generateRandomDataset(StateP state, int sampleSize, int varSize)
+{
+    vector<Point> points;
+    for (int i = 0; i < sampleSize; i++)
+    {
+        Point p;
+        for (int j = 0; j < varSize; j++)
+        {
+            double randomValue = state->getRandomizer()->getRandomDouble();
+            p.coordinates.push_back(randomValue);
+        }
+        points.push_back(p);
+    }
+
+    return points;
+}
+
+vector<double> getStdevsFromPoints(Tree::Tree* firstTree, Tree::Tree* secondTree, vector<Point> points, vector<vector<string>> variables)
+{
+    vector<double> additionResults;
+    vector<double> subtractionResults;
+    vector<double> multiplicationResults;
+    vector<double> divisionResults;
+
+    for (int i = 0; i < points.size(); i++)
+    {
+        Point p = points[i];
+
+        double firstExecution = executeTree(firstTree, variables[0], p);
+        double secondExecution = executeTree(secondTree, variables[1], p);
+
+        double result1 = calculateResult2Trees(firstExecution, secondExecution, "+");
+        double result2 = calculateResult2Trees(firstExecution, secondExecution, "-");
+        double result3 = calculateResult2Trees(firstExecution, secondExecution, "*");
+        double result4 = calculateResult2Trees(firstExecution, secondExecution, "/");
+
+        additionResults.push_back(result1);
+        subtractionResults.push_back(result2);
+        multiplicationResults.push_back(result3);
+        divisionResults.push_back(result4);
+    }
+
+    double stdev1 = getStdev(additionResults);
+    double stdev2 = getStdev(subtractionResults);
+    double stdev3 = getStdev(multiplicationResults);
+    double stdev4 = getStdev(divisionResults);
+
+    return { stdev1, stdev2, stdev3, stdev4 };
 }
 
 double getFitnessFromDerivation(double experimentalDerivation, double dv1, double dv2, double punishment)
