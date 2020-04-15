@@ -1,9 +1,9 @@
 #include <cmath>
 
-class Sqrt : public Tree::Primitives::Primitive
+class Square : public Tree::Primitives::Primitive
 {
 public:
-    Sqrt()
+    Square()
     {
         nArguments_ = 1;
         name_ = "sqrt";
@@ -13,9 +13,9 @@ public:
     {
         double& arg = *(double*)evalOp;
         getNextArgument(&arg, tree);
-        arg = sqrt(arg);
+        arg = arg * arg;
     }
 
-    ~Sqrt()
+    ~Square()
     {	}
 };

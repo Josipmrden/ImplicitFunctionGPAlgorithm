@@ -34,7 +34,9 @@ set(SOURCE_FILES
         implicit_functions/unordered/UnorderedMultiDimMultiGenEval.h
         utils/primitives/Exp.h
         utils/primitives/Sqrt.h
-        executables/UnorderedMultiDimMultiGenRegression.cpp)
+        utils/primitives/Tanh.h
+        utils/primitives/Square.h
+        executables/BenchmarkTesting.cpp)
 
 find_package(Boost)
 if(Boost_FOUND)

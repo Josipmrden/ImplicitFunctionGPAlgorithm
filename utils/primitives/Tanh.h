@@ -1,21 +1,21 @@
 #include <cmath>
 
-class Sqrt : public Tree::Primitives::Primitive
+class Tanh : public Tree::Primitives::Primitive
 {
 public:
-    Sqrt()
+    Tanh()
     {
         nArguments_ = 1;
-        name_ = "sqrt";
+        name_ = "tanh";
     }
 
     void execute(void* evalOp, Tree::Tree& tree)
     {
         double& arg = *(double*)evalOp;
         getNextArgument(&arg, tree);
-        arg = sqrt(arg);
+        arg = tanh(arg);
     }
 
-    ~Sqrt()
+    ~Tanh()
     {	}
 };

@@ -3,7 +3,6 @@
 class Exp : public Tree::Primitives::Primitive
 {
 public:
-    // 3 subtrees
     Exp()
     {
         nArguments_ = 1;
