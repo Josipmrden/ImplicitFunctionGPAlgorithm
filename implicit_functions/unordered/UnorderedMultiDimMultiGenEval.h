@@ -1,5 +1,5 @@
-#ifndef SymbRegEvalOp_h
-#define SymbRegEvalOp_h
+#ifndef SYMBREGEXERCISE_UNORDEREDMULTIDIMMULTIGENIMPLICITEVAL_H
+#define SYMBREGEXERCISE_UNORDEREDMULTIDIMMULTIGENIMPLICITEVAL_H
 
 #include <string>
 #include <vector>
@@ -9,17 +9,16 @@
 #include <examples/SymbRegExercise/utils/MultiDimEllipse.h>
 #include <examples/SymbRegExercise/utils/MathFunctions.h>
 #include <examples/SymbRegExercise/implicit_functions/SymbolicRegressionUtil.h>
+#include <examples/SymbRegExercise/implicit_functions/AbstractEvaluateOp.h>
 
 using namespace std;
 
-class UnorderedMultiDimMultiGenEval : public EvaluateOp
+class UnorderedMultiDimMultiGenEval : public AbstractEvaluateOp
 {
 private:
     StateP _state;
-    string _datasetFileName;
     vector<MultiDimEllipse> _multiEllipses;
     vector<Point> _points;
-    ParetoFrontier* _paretoFrontier;
     vector<string> _variables;
     vector<vector<string>> _variablesPerTree;
     vector<map<string, int>> _indexOfVariablesPerTree;
@@ -28,15 +27,22 @@ private:
     bool _initializedVariables;
     double epsylon = 10E-5;
 public:
-    UnorderedMultiDimMultiGenEval(string datasetFileName, ParetoFrontier* paretoFrontier, StateP state);
+    AbstractEvaluateOp* createNew() override;
     bool initialize(StateP state);
-    FitnessP evaluate(IndividualP individual);
+    FitnessP evaluate(IndividualP individual) override;
+    UnorderedMultiDimMultiGenEval();
+    UnorderedMultiDimMultiGenEval(string datasetFileName, ParetoFrontier* paretoFrontier, StateP state);
     double executeTree(Tree::Tree* tree, vector<string> assignedVariables, Point point);
     double executeTreeForMovedPoint(
             Tree::Tree *tree,
             map<string, int> indexOfVariables,
             Point point,
             int index);
+
+    string getName() override
+    {
+        return "IEUNDMG";
+    }
 };
 typedef boost::shared_ptr<UnorderedMultiDimMultiGenEval> AntEvalOpP;
 

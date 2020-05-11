@@ -118,7 +118,7 @@ vector<string> getAlgorithmVariables(Tree::Tree* tree, StateP state)
             break;
         }
 
-        if (variableString.size() == 1 && isalpha(variableString[0]))
+        if (isalpha(variableString[0]))
         {
             variables.push_back(variableString);
         }
@@ -283,17 +283,23 @@ vector<double> getStdevsFromPoints(Tree::Tree* firstTree, Tree::Tree* secondTree
 
 double getFitnessFromDerivation(double experimentalDerivation, double dv1, double dv2, double punishment)
 {
-    if (isnan(dv1) || isnan(dv2) || (dv1 == 0.0 && dv2 == 0.0))
+    if (isnan(dv2) || isnan(dv1) || dv1 == 0.0)
     {
         return punishment;
     }
 
     double solutionDerivation = - dv2/dv1;
+
+    if (isnan(solutionDerivation))
+    {
+        return punishment;
+    }
+
     double fitness = log(1 + fabs(experimentalDerivation - solutionDerivation));
 
     if (fitness > punishment)
     {
-        fitness = punishment;
+        return punishment;
     }
 
     return fitness;

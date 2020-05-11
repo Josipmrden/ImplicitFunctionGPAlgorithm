@@ -2,17 +2,31 @@
 
 using namespace std;
 
-UnorderedMultiDimMultiGenEval::UnorderedMultiDimMultiGenEval(string datasetFileName, ParetoFrontier* paretoFrontier, StateP state) {
-    _state = state;
-    _datasetFileName = datasetFileName;
-    _paretoFrontier = paretoFrontier;
-    _initializedVariables = false;
-    _operations = {"+", "-", "*"};
+UnorderedMultiDimMultiGenEval::UnorderedMultiDimMultiGenEval() : AbstractEvaluateOp()
+{
+    this->noTrees = 2;
+    this->requiresPlanes = true;
+}
+UnorderedMultiDimMultiGenEval::UnorderedMultiDimMultiGenEval(string datasetFileName, ParetoFrontier* paretoFrontier, StateP state)
+    : AbstractEvaluateOp(datasetFileName, paretoFrontier)
+{
+    this->_state = state;
+    this->noTrees = 2;
+    this->requiresPlanes = true;
+}
+
+AbstractEvaluateOp *UnorderedMultiDimMultiGenEval::createNew()
+{
+    return new UnorderedMultiDimMultiGenEval();
 }
 
 // called only once, before the evolution and generates training data
 bool UnorderedMultiDimMultiGenEval::initialize(StateP state)
 {
+    _state = state;
+    _initializedVariables = false;
+    _operations = {"+", "-", "*"};
+
     std::ifstream inputFileStream(_datasetFileName);
     int sampleSize;
     int varCount;
@@ -62,10 +76,26 @@ bool UnorderedMultiDimMultiGenEval::initialize(StateP state)
 }
 
 FitnessP UnorderedMultiDimMultiGenEval::evaluate(IndividualP individual)
-{   //"<Tree size=\"13\">- 25 + * X X + * Y Y * Z Z</Tree>";
-    //Tree::Tree* firstTree = getTreeAtIndex(individual, "<Tree size=\"7\">+ * X X * Y Y </Tree>", 0);
+{
+    //"<Tree size=\"3\">* 4 4</Tree>" -> circle
+    //"<Tree size=\"7\"> + * Y Y * X X</Tree>" -> circle
+
+    //"<Tree size=\"7\">+ * Y Y * X X</Tree>" -> sphere
+    //"<Tree size=\"7\">- * 5 5 * Z Z</Tree>" -> sphere
+
+    //"<Tree size=\"7\">+ * * X X X X</Tree>" -> hyperbola
+    //"<Tree size=\"5\">+ * Y Y 1.5</Tree>" -> hyperbola
+
+    //"<Tree size=\"11\">/ * - X 1 - X 1 * 3 3</Tree>" -> ellipse
+    //"<Tree size=\"13\">- / * - Y 2 - Y 2 * 4 4 1</Tree>" -> ellipse
+
+    //"<Tree size=\"5\">- Z * 0.1 Y</Tree>" -> harmonic oscillator
+    //"<Tree size=\"3\">* 3 X</Tree>" -> harmonic oscillator
+
+    //"<Tree size=\"5\">- Z * 0.1 Y</Tree>" -> nonlinear harmonic oscillator
+    //"<Tree size=\"4\">* 9.8 sin X</Tree>" -> nonlinear harmonic oscillator
+
     Tree::Tree* firstTree = getTreeAtIndex(individual, "", 0);
-    //Tree::Tree* secondTree = getTreeAtIndex(individual, "<Tree size=\"5\">- 25 * Z Z </Tree>", 1);
     Tree::Tree* secondTree = getTreeAtIndex(individual, "", 1);
     vector<Tree::Tree*> allTrees { firstTree, secondTree };
 
@@ -130,10 +160,8 @@ FitnessP UnorderedMultiDimMultiGenEval::evaluate(IndividualP individual)
         return fitness;
     }
 
-    _operations = leftoverOperators;
-
     map<string, double> fitnesses;
-    for (string operation : _operations)
+    for (string operation : leftoverOperators)
     {
         fitnesses[operation] = 0.0;
     }
@@ -147,7 +175,7 @@ FitnessP UnorderedMultiDimMultiGenEval::evaluate(IndividualP individual)
 
         //derivation for each variable
         map<string, vector<double>> derivationByVariablesMap;
-        for (string operation : _operations)
+        for (string operation : leftoverOperators)
         {
             derivationByVariablesMap[operation] = {};
         }
@@ -156,7 +184,7 @@ FitnessP UnorderedMultiDimMultiGenEval::evaluate(IndividualP individual)
             double movedEvaluation0 = this->executeTreeForMovedPoint(firstTree, _indexOfVariablesPerTree[0], point, j);
             double movedEvaluation1 = this->executeTreeForMovedPoint(secondTree, _indexOfVariablesPerTree[1], point, j);
 
-            for (string operation : _operations)
+            for (string operation : leftoverOperators)
             {
                 double notMovedEvaluation = calculateResult2Trees(notMovedEvaluation0, notMovedEvaluation1, operation);
                 double movedEvaluation = calculateResult2Trees(movedEvaluation0, movedEvaluation1, operation);
@@ -172,7 +200,7 @@ FitnessP UnorderedMultiDimMultiGenEval::evaluate(IndividualP individual)
             {
                 double dataDerivative = _multiEllipses[i].getDerivationCached(j, k);
 
-                for (string operation : _operations)
+                for (string operation : leftoverOperators)
                 {
                     double dv1 = derivationByVariablesMap[operation][j];
                     double dv2 = derivationByVariablesMap[operation][k];

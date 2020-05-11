@@ -5,16 +5,30 @@
 #include "Unordered2DImplicitEvaluation.h"
 using namespace std;
 
-Unordered2DImplicitEvaluation::Unordered2DImplicitEvaluation(string datasetFileName, ParetoFrontier* paretoFrontier, StateP state) {
+Unordered2DImplicitEvaluation::Unordered2DImplicitEvaluation() : AbstractEvaluateOp()
+{
+    this->noTrees = 1;
+    this->requiresPlanes = true;
+}
+Unordered2DImplicitEvaluation::Unordered2DImplicitEvaluation(string datasetFileName, ParetoFrontier* paretoFrontier, StateP state)
+: AbstractEvaluateOp(datasetFileName, paretoFrontier)
+{
+    this->noTrees = 1;
     _state = state;
-    _datasetFileName = datasetFileName;
-    _paretoFrontier = paretoFrontier;
     _initializedVariables = false;
+    this->requiresPlanes = true;
+}
+
+AbstractEvaluateOp *Unordered2DImplicitEvaluation::createNew() {
+    return new Unordered2DImplicitEvaluation();
 }
 
 // called only once, before the evolution � generates training data
 bool Unordered2DImplicitEvaluation::initialize(StateP state)
 {
+    _state = state;
+    _initializedVariables = false;
+
     std::ifstream inputFileStream(_datasetFileName);
     int sampleSize;
     int varCount;

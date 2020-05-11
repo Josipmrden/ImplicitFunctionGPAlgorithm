@@ -7,10 +7,17 @@
 #include <utility>
 #include <ecf/ECF.h>
 
-ParetoFrontier::ParetoFrontier(std::string basicString)
+ParetoFrontier::ParetoFrontier(string basicString)
 {
     this->_paretoFrontFile = std::move(basicString);
     this->multiplier = pow(10, precision);
+}
+
+ParetoFrontier::ParetoFrontier() {}
+
+void ParetoFrontier::reset()
+{
+    this->_paretoFront.clear();
 }
 
 bool dominates(ParetoSolution one, ParetoSolution two)
@@ -54,7 +61,7 @@ bool worseThan(ParetoSolution one, ParetoSolution two)
 
 void ParetoFrontier::tryAddingNewSolutionToFront(ParetoSolution potential)
 {
-    std::vector<ParetoSolution> newParetoFront;
+    vector<ParetoSolution> newParetoFront;
     bool dominatedAny = false;
     bool worseThanAnyone = false;
     bool hasSame = false;
@@ -135,7 +142,7 @@ void ParetoFrontier::writeParetoFront()
     paretoFrontFile.close();
 }
 
-ParetoSolution ParetoFrontier::createNewSolution(double fitness, int size, int noTrees, std::string representation)
+ParetoSolution ParetoFrontier::createNewSolution(double fitness, int size, int noTrees, string representation)
 {
     ParetoSolution solution;
     solution.fitness = round(fitness * this->multiplier) / this->multiplier;

@@ -5,7 +5,6 @@
 #ifndef SYMBREGEXERCISE_POINT_H
 #define SYMBREGEXERCISE_POINT_H
 
-#endif //SYMBREGEXERCISE_POINT_H
 #include <vector>
 using namespace std;
 
@@ -15,3 +14,5 @@ public:
     vector<double> coordinates;
     Point getEpsylonedPoint(int index, double epsylon);
 };
+
+#endif //SYMBREGEXERCISE_POINT_H

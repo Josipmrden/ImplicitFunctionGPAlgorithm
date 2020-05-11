@@ -18,7 +18,8 @@ int main(int argc, char **argv)
     TreeP tree (new Tree::Tree);
     state->addGenotype(tree);
 
-    auto* multipleTreeEvalOp = new MultipleTreeEvaluator(state, datasetFileName);
+    auto* paretoFrontier = new ParetoFrontier(paretoFrontFileName);
+    auto* multipleTreeEvalOp = new MultipleTreeEvaluator(state, datasetFileName, paretoFrontier);
 
     state->setEvalOp(multipleTreeEvalOp);
     state->initialize(argc, argv);

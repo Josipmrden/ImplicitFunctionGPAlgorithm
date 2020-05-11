@@ -4,22 +4,28 @@
 #include <string>
 #include <vector>
 #include "ParetoFrontier.h"
+#include "AbstractEvaluateOp.h"
 
 extern vector<string> availableLetters;
 extern double epsylon;
 extern double MIN;
 
-class ImplicitEvaluationWithPartialDerivatives : public EvaluateOp
+class ImplicitEvaluationWithPartialDerivatives : public AbstractEvaluateOp
 {
 private:
-    std::string _datasetFileName;
     std::vector<std::vector<double>> _domain;
     std::vector<double> _partialDerivatives;
-    ParetoFrontier* _paretoFrontier;
 public:
+    ImplicitEvaluationWithPartialDerivatives();
     ImplicitEvaluationWithPartialDerivatives(std::string datasetFileName, ParetoFrontier* paretoFrontier);
-    bool initialize(StateP state);
-    FitnessP evaluate(IndividualP individual);
+    AbstractEvaluateOp* createNew() override;
+    bool initialize(StateP state) override;
+    FitnessP evaluate(IndividualP individual) override;
+
+    string getName() override
+    {
+        return "IEO";
+    }
 };
 
 #endif

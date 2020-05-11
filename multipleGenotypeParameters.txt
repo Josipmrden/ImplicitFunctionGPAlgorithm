@@ -7,15 +7,15 @@
 	</Algorithm>
 	<Genotype>
 		<Tree>
-			<Entry key="maxdepth">3</Entry>
-			<Entry key="functionset">+ - *</Entry>
+			<Entry key="maxdepth">10</Entry>
+			<Entry key="functionset">+ - * / sin</Entry>
 			<Entry key="terminalset">X Y Z 25</Entry>
 		</Tree>
 	</Genotype>
     <Genotype>
         <Tree>
-            <Entry key="maxdepth">3</Entry>
-            <Entry key="functionset">+ - *</Entry>
+            <Entry key="maxdepth">10</Entry>
+            <Entry key="functionset">+ - * / sin</Entry>
             <Entry key="terminalset">X Y Z 25</Entry>
         </Tree>
     </Genotype>
@@ -29,8 +29,6 @@
 		<Entry key="randomizer.seed">0</Entry>
 		<Entry key="population.size">100</Entry>
 		<Entry key="mutation.indprob">0.3</Entry>
-		<Entry key="term.stagnation">100</Entry>
-		<Entry key="term.fitnessval">0.001</Entry>
 		<Entry key="term.eval">200000</Entry>
 	</Registry>
 </ECF>

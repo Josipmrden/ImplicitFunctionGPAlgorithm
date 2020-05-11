@@ -10,9 +10,20 @@ double epsylon = 10e-5;
 double MIN = 10e-10;
 int evalNo = 0;
 
-ImplicitEvaluationWithPartialDerivatives::ImplicitEvaluationWithPartialDerivatives(std::string datasetFileName, ParetoFrontier* paretoFrontier) {
-    this->_datasetFileName = datasetFileName;
-    this->_paretoFrontier = paretoFrontier;
+ImplicitEvaluationWithPartialDerivatives::ImplicitEvaluationWithPartialDerivatives() : AbstractEvaluateOp()
+{
+    this->noTrees = 1;
+    this->requiresPlanes = false;
+}
+ImplicitEvaluationWithPartialDerivatives::ImplicitEvaluationWithPartialDerivatives(std::string datasetFileName, ParetoFrontier* paretoFrontier):
+AbstractEvaluateOp(datasetFileName, paretoFrontier)
+{
+    this->noTrees = 1;
+    this->requiresPlanes = false;
+}
+
+AbstractEvaluateOp *ImplicitEvaluationWithPartialDerivatives::createNew() {
+    return new ImplicitEvaluationWithPartialDerivatives();
 }
 
 // called only once, before the evolution � generates training data
@@ -79,14 +90,10 @@ double calculate(std::vector<double> values) {
 
 FitnessP ImplicitEvaluationWithPartialDerivatives::evaluate(IndividualP individual)
 {
-
     evalNo++;
-    //feenableexcept(FE_INVALID | FE_OVERFLOW);
-    // we try to minimize the function value, so we use FitnessMin fitness (for minimization problems)
 
     FitnessP fitness (new FitnessMin);
 
-    // get the genotype we defined in the configuration file
     Tree::Tree* tree = (Tree::Tree*) individual->getGenotype().get();
 
     double equalsZeroFitness = 0;

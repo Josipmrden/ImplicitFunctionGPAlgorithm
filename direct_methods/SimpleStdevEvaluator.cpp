@@ -7,11 +7,24 @@
 #include <examples/SymbRegExercise/implicit_functions/SymbolicRegressionUtil.h>
 #include "SimpleStdevEvaluator.h"
 
-SimpleStdevEvaluator::SimpleStdevEvaluator(StateP state, string datasetFileName)
+SimpleStdevEvaluator::SimpleStdevEvaluator() : AbstractEvaluateOp()
+{
+    this->noTrees = 1;
+    this->requiresPlanes = false;
+}
+SimpleStdevEvaluator::SimpleStdevEvaluator(StateP state, string datasetFileName, ParetoFrontier* paretoFrontier):
+AbstractEvaluateOp(datasetFileName, paretoFrontier)
+{
+    this->noTrees = 1;
+    this->_state = state;
+    this->_initializedVariables = false;
+    this->requiresPlanes = false;
+}
+
+bool SimpleStdevEvaluator::initialize(StateP state)
 {
     this->_state = state;
-    this->_datasetFileName = datasetFileName;
-    this->_initializedVariables = false;
+
 
     ifstream inputFileStream(this->_datasetFileName);
     int sampleSize;
@@ -42,8 +55,19 @@ SimpleStdevEvaluator::SimpleStdevEvaluator(StateP state, string datasetFileName)
     }
 }
 
+
+AbstractEvaluateOp *SimpleStdevEvaluator::createNew() {
+    return new SimpleStdevEvaluator();
+}
+
 FitnessP SimpleStdevEvaluator::evaluate(IndividualP individual)
 {
+    //"<Tree size=\"11\">- * 4 4 + * Y Y * X X</Tree>" -> circle
+    //"<Tree size=\"15\">- * 5 5 + + * Z Z * Y Y * X X</Tree>" -> sphere
+    //"<Tree size=\"13\">- - + X * * X X X * Y Y 1.5</Tree>" -> hyperbola
+    //"<Tree size=\"25\">+ / * - X 1 - X 1 * 3 3 - / * - Y 2 - Y 2 * 4 4 1</Tree>" -> ellipse
+    //"<Tree size=\"9\">+ - Z * 0.1 Y * 3 X</Tree>" -> harmonic oscillator
+    //"<Tree size=\"10\">+ - Z * 0.1 Y * 9.8 sin X</Tree>" -> nonlinear harmonic oscillator
     Tree::Tree* tree = getTree(individual, "");
     FitnessP fitness (new FitnessMin);
 
@@ -53,10 +77,12 @@ FitnessP SimpleStdevEvaluator::evaluate(IndividualP individual)
         _initializedVariables = true;
     }
 
+    double domainSize = _points.size();
+    double punishment = domainSize * domainSize * domainSize;
+
     if (!containsAllVariables(tree, _variables) || isLowStdevOnRandomValues(tree, _state, _variables))
     {
-        int domainSize = _points.size();
-        fitness->setValue(domainSize * domainSize * domainSize);
+        fitness->setValue(punishment);
         return fitness;
     }
 
@@ -76,6 +102,15 @@ FitnessP SimpleStdevEvaluator::evaluate(IndividualP individual)
 
     double stdev = getStdev(results);
 
+    if (isnan(stdev) || fabs(stdev) > punishment)
+    {
+        fitness->setValue(punishment);
+        return fitness;
+    }
+
     fitness->setValue(stdev);
+
+    _paretoFrontier->updateParetoFront(tree, stdev);
+
     return fitness;
 }

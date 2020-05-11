@@ -2,12 +2,23 @@
 // Created by josipmrden on 27. 02. 2020..
 //
 #include "MultipleTreeEvaluator.h"
-#include "../utils/MathFunctions.h"
 
-MultipleTreeEvaluator::MultipleTreeEvaluator(StateP state, string datasetFileName)
+MultipleTreeEvaluator::MultipleTreeEvaluator() : AbstractEvaluateOp()
+{
+    this->noTrees = 2;
+    this->requiresPlanes = false;
+}
+MultipleTreeEvaluator::MultipleTreeEvaluator(StateP state, string datasetFileName, ParetoFrontier* paretoFrontier)
+: AbstractEvaluateOp(datasetFileName, paretoFrontier)
+{
+    this->noTrees = 2;
+    this->_state = state;
+    this->requiresPlanes = false;
+}
+
+bool MultipleTreeEvaluator::initialize(StateP state)
 {
     this->_state = state;
-    this->_datasetFileName = datasetFileName;
     this->_initializedVariables = false;
 
     ifstream inputFileStream(this->_datasetFileName);
@@ -39,8 +50,30 @@ MultipleTreeEvaluator::MultipleTreeEvaluator(StateP state, string datasetFileNam
     }
 }
 
+AbstractEvaluateOp *MultipleTreeEvaluator::createNew() {
+    return new MultipleTreeEvaluator();
+}
+
 bool MultipleTreeEvaluator::containsAllVariables(IndividualP individual)
 {
+    //"<Tree size=\"3\">* 4 4</Tree>" -> circle
+    //"<Tree size=\"7\"> + * Y Y * X X</Tree>" -> circle
+
+    //"<Tree size=\"7\">+ * Y Y * X X</Tree>" -> sphere
+    //"<Tree size=\"7\">- * 5 5 * Z Z</Tree>" -> sphere
+
+    //"<Tree size=\"7\">+ * * X X X X</Tree>" -> hyperbola
+    //"<Tree size=\"5\">+ * Y Y 1.5</Tree>" -> hyperbola
+
+    //"<Tree size=\"11\">/ * - X 1 - X 1 * 3 3</Tree>" -> ellipse
+    //"<Tree size=\"13\">- / * - Y 2 - Y 2 * 4 4 1</Tree>" -> ellipse
+
+    //"<Tree size=\"5\">- Z * 0.1 Y</Tree>" -> harmonic oscillator
+    //"<Tree size=\"3\">* 3 X</Tree>" -> harmonic oscillator
+
+    //"<Tree size=\"5\">- Z * 0.1 Y</Tree>" -> nonlinear harmonic oscillator
+    //"<Tree size=\"4\">* 9.8 sin X</Tree>" -> nonlinear harmonic oscillator
+
     Tree::Tree* first = (Tree::Tree*) individual->getGenotype(0).get();
     Tree::Tree* second = (Tree::Tree*) individual->getGenotype(1).get();
 
@@ -154,8 +187,25 @@ double MultipleTreeEvaluator::getFitnessFromPoints(IndividualP individual, vecto
 
 double MultipleTreeEvaluator::getResult(IndividualP individual, Point p, string op)
 {
-    Tree::Tree* first = (Tree::Tree*) individual->getGenotype(0).get();
-    Tree::Tree* second = (Tree::Tree*) individual->getGenotype(1).get();
+    //"<Tree size=\"3\">* 4 4</Tree>" -> circle
+    //"<Tree size=\"7\"> + * Y Y * X X</Tree>" -> circle
+
+    //"<Tree size=\"7\">+ * Y Y * X X</Tree>" -> sphere
+    //"<Tree size=\"7\">- * 5 5 * Z Z</Tree>" -> sphere
+
+    //"<Tree size=\"7\">+ * * X X X X</Tree>" -> hyperbola
+    //"<Tree size=\"5\">+ * Y Y 1.5</Tree>" -> hyperbola
+
+    //"<Tree size=\"11\">/ * - X 1 - X 1 * 3 3</Tree>" -> ellipse
+    //"<Tree size=\"13\">- / * - Y 2 - Y 2 * 4 4 1</Tree>" -> ellipse
+
+    //"<Tree size=\"5\">- Z * 0.1 Y</Tree>" -> harmonic oscillator
+    //"<Tree size=\"3\">* 3 X</Tree>" -> harmonic oscillator
+
+    //"<Tree size=\"5\">- Z * 0.1 Y</Tree>" -> nonlinear harmonic oscillator
+    //"<Tree size=\"4\">* 9.8 sin X</Tree>" -> nonlinear harmonic oscillator
+    Tree::Tree* first = getTreeAtIndex(individual, "", 0);
+    Tree::Tree* second = getTreeAtIndex(individual, "", 1);
 
     for (int j = 0; j < this->_variables.size(); j++)
     {
@@ -191,6 +241,9 @@ double MultipleTreeEvaluator::getResult(IndividualP individual, Point p, string 
 
 FitnessP MultipleTreeEvaluator::evaluate(IndividualP individual)
 {
+    Tree::Tree* first = getTreeAtIndex(individual, "", 0);
+    Tree::Tree* second = getTreeAtIndex(individual, "", 1);
+    vector<Tree::Tree*> allTrees = { first, second };
     FitnessP fitness (new FitnessMin);
 
     if (!this->_initializedVariables)
@@ -199,23 +252,31 @@ FitnessP MultipleTreeEvaluator::evaluate(IndividualP individual)
         this->_initializedVariables = true;
     }
 
+    double domainSize = this->_points.size();
+    double punishment = domainSize * domainSize * domainSize;
+
     if (!containsAllVariables(individual))
     {
-        int domainSize = this->_points.size();
-        fitness->setValue(domainSize * domainSize * domainSize);
+        fitness->setValue(punishment);
         return fitness;
     }
 
     if (isLowStdevOnRandomValues(individual))
     {
-        int domainSize = this->_points.size();
         fitness->setValue(domainSize * domainSize * domainSize);
         return fitness;
     }
 
     double minimalStdev = getFitnessFromPoints(individual, this->_points);
+    if (isnan(minimalStdev) || fabs(minimalStdev) > punishment)
+    {
+        fitness->setValue(punishment);
+        return fitness;
+    }
 
     fitness->setValue(minimalStdev);
+
+    _paretoFrontier->updateParetoFront(allTrees, minimalStdev);
 
     return fitness;
 }

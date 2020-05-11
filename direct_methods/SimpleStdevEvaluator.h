@@ -7,21 +7,30 @@
 
 #include <string>
 #include <vector>
+#include <examples/SymbRegExercise/implicit_functions/ParetoFrontier.h>
+#include <examples/SymbRegExercise/implicit_functions/AbstractEvaluateOp.h>
 
 using namespace std;
 
 
-class SimpleStdevEvaluator : public EvaluateOp
+class SimpleStdevEvaluator : public AbstractEvaluateOp
 {
 private:
-    string _datasetFileName;
     vector<Point> _points;
     vector<string> _variables;
     bool _initializedVariables;
     StateP _state;
 public:
-    SimpleStdevEvaluator(StateP state, string datasetFileName);
-    FitnessP evaluate(IndividualP individual);
+    SimpleStdevEvaluator();
+    AbstractEvaluateOp* createNew() override;
+    SimpleStdevEvaluator(StateP state, string datasetFileName, ParetoFrontier* paretoFrontier);
+    bool initialize(StateP state) override;
+    FitnessP evaluate(IndividualP individual) override;
+
+    string getName() override
+    {
+        return "SSE";
+    }
 };
 
 

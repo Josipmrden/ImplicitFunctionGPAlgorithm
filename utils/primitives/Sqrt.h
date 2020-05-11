@@ -13,7 +13,13 @@ public:
     {
         double& arg = *(double*)evalOp;
         getNextArgument(&arg, tree);
-        arg = sqrt(arg);
+        if (arg > 0)
+        {
+            arg = sqrt(arg);
+        }
+        else {
+            arg = 0;
+        }
     }
 
     ~Sqrt()

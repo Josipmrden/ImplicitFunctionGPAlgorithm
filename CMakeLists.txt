@@ -4,6 +4,8 @@ project(SymbRegExercise)
 set(CMAKE_CXX_STANDARD 11)
 
 set(SOURCE_FILES
+        implicit_functions/AbstractEvaluateOp.cpp
+        implicit_functions/AbstractEvaluateOp.h
         implicit_functions/ImplicitEvaluationWithPartialDerivatives.cpp
         implicit_functions/ImplicitEvaluationWithPartialDerivatives.h
         implicit_functions/ParetoFrontier.cpp
@@ -36,7 +38,16 @@ set(SOURCE_FILES
         utils/primitives/Sqrt.h
         utils/primitives/Tanh.h
         utils/primitives/Square.h
-        executables/BenchmarkTesting.cpp)
+        utils/primitives/Negated.h
+        implicit_functions/cross_validation/InstanceRunner.cpp
+        implicit_functions/cross_validation/InstanceRunner.h
+        implicit_functions/cross_validation/TweakableParameters.cpp
+        implicit_functions/cross_validation/TweakableParameters.h
+        implicit_functions/cross_validation/CrossValUtil.h
+        implicit_functions/cross_validation/ParameterSet.cpp
+        implicit_functions/cross_validation/ParameterSet.h
+        executables/BenchmarkTesting.cpp
+        utils/SymbRegLibrary.h implicit_functions/cross_validation/DatasetInfo.cpp implicit_functions/cross_validation/DatasetInfo.h)
 
 find_package(Boost)
 if(Boost_FOUND)

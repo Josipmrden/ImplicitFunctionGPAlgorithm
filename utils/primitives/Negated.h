@@ -1,21 +1,21 @@
 #include <cmath>
 
-class Square : public Tree::Primitives::Primitive
+class Negated : public Tree::Primitives::Primitive
 {
 public:
-    Square()
+    Negated()
     {
         nArguments_ = 1;
-        name_ = "square";
+        name_ = "ngt";
     }
 
     void execute(void* evalOp, Tree::Tree& tree)
     {
         double& arg = *(double*)evalOp;
         getNextArgument(&arg, tree);
-        arg = arg * arg;
+        arg = -arg;
     }
 
-    ~Square()
+    ~Negated()
     {	}
 };

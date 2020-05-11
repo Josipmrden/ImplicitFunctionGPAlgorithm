@@ -2,16 +2,30 @@
 
 using namespace std;
 
-UnorderedMultiDimImplicitEvaluation::UnorderedMultiDimImplicitEvaluation(string datasetFileName, ParetoFrontier* paretoFrontier, StateP state) {
+UnorderedMultiDimImplicitEvaluation::UnorderedMultiDimImplicitEvaluation() : AbstractEvaluateOp()
+{
+    this->noTrees = 1;
+    this->requiresPlanes = true;
+};
+UnorderedMultiDimImplicitEvaluation::UnorderedMultiDimImplicitEvaluation(string datasetFileName, ParetoFrontier* paretoFrontier, StateP state)
+    : AbstractEvaluateOp(datasetFileName, paretoFrontier)
+{
+    this->noTrees = 1;
     _state = state;
-    _datasetFileName = datasetFileName;
-    _paretoFrontier = paretoFrontier;
     _initializedVariables = false;
+    this->requiresPlanes = true;
+}
+
+AbstractEvaluateOp *UnorderedMultiDimImplicitEvaluation::createNew() {
+    return new UnorderedMultiDimImplicitEvaluation();
 }
 
 // called only once, before the evolution and generates training data
 bool UnorderedMultiDimImplicitEvaluation::initialize(StateP state)
 {
+    _state = state;
+    _initializedVariables = false;
+
     std::ifstream inputFileStream(_datasetFileName);
     int sampleSize;
     int varCount;
@@ -22,7 +36,7 @@ bool UnorderedMultiDimImplicitEvaluation::initialize(StateP state)
 
     vector<MultiDimEllipse> ellipses;
     vector<Point> points;
-    for(int i = 0; i < sampleSize; i += 2) {
+    for(int i = 0; i < sampleSize; i += 1) {
         string pointLine;
         getline(inputFileStream, pointLine);
         istringstream lineStream(pointLine);
@@ -64,7 +78,13 @@ bool UnorderedMultiDimImplicitEvaluation::initialize(StateP state)
 
 FitnessP UnorderedMultiDimImplicitEvaluation::evaluate(IndividualP individual)
 {
-    Tree::Tree* tree = getTree(individual, "<Tree size=\"13\">- 25 + * X X + * Y Y * Z Z</Tree>");
+    //"<Tree size=\"11\">- * 4 4 + * Y Y * X X</Tree>" -> circle
+    //"<Tree size=\"15\">- * 5 5 + + * Z Z * Y Y * X X</Tree>" -> sphere
+    //"<Tree size=\"13\">- - + X * * X X X * Y Y 1.5</Tree>" -> hyperbola
+    //"<Tree size=\"25\">+ / * - X 1 - X 1 * 3 3 - / * - Y 2 - Y 2 * 4 4 1</Tree>" -> ellipse
+    //"<Tree size=\"9\">+ - Z * 0.1 Y * 3 X</Tree>" -> harmonic oscillator
+    //"<Tree size=\"10\">+ - Z * 0.1 Y * 9.8 sin X</Tree>" -> nonlinear harmonic oscillator
+    Tree::Tree* tree = getTree(individual, "");
 
     if (!_initializedVariables)
     {
@@ -110,6 +130,12 @@ FitnessP UnorderedMultiDimImplicitEvaluation::evaluate(IndividualP individual)
 
                 double calculatedPointFitness = getFitnessFromDerivation(dataDerivative, dv1, dv2, punishment);
                 totalFitness += calculatedPointFitness;
+
+                if (totalFitness > punishment)
+                {
+                    fitness->setValue(totalFitness);
+                    return fitness;
+                }
             }
         }
     }
