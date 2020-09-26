@@ -1,5 +1,5 @@
 //
-// Created by josipmrden on 23. 04. 2020..
+// Created by josipmrden on 23. 04. 2020.
 //
 
 #include "TweakableParameters.h"
@@ -13,10 +13,11 @@ TweakableParameters::TweakableParameters()
     currentMutIndex = 0;
     currentPopIndex = 0;
     populationSizes = {50, 100, 200, 500, 1000};
-    mutationProbablities = {0.1, 0.2, 0.3, 0.5, 0.7, 0.9};
+    mutationProbablities = {0.9};
+    depths = {4, 5, 6, 7, 8, 9, 10};
     selectionTypes = {Tournament3, RouletteWheel};
 }
-TweakableParameters::TweakableParameters(vector<int> popSizes, vector<double> mutProbs, vector<SelectionType> selectTypes)
+TweakableParameters::TweakableParameters(vector<int> popSizes, vector<double> mutProbs, vector<SelectionType> selectTypes, vector<int> depths)
 {
     fixedSelType = false;
     fixedPopSize = false;
@@ -27,6 +28,7 @@ TweakableParameters::TweakableParameters(vector<int> popSizes, vector<double> mu
     this->populationSizes = popSizes;
     this->mutationProbablities = mutProbs;
     this->selectionTypes = selectTypes;
+    this->depths = depths;
 }
 
 bool TweakableParameters::hasNext(TweakableType type)
@@ -94,7 +96,7 @@ ParameterSet TweakableParameters::getNext(TweakableType type)
             break;
     }
 
-    ParameterSet ps(popParam, mutProb, st);
+    ParameterSet ps(popParam, mutProb, st, this->depths);
     return ps;
 }
 

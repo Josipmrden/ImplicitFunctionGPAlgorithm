@@ -7,6 +7,7 @@
 
 
 #include <string>
+#include <vector>
 #include "CrossValUtil.h"
 using namespace std;
 
@@ -15,8 +16,9 @@ public:
     int populationSize;
     double mutationProbablity;
     SelectionType selectionType;
+    vector<int> depths;
     string getName();
-    ParameterSet(int popSize, double mutProb, SelectionType selType);
+    ParameterSet(int popSize, double mutProb, SelectionType selType, vector<int> depths);
 };
 
 

@@ -14,6 +14,9 @@
 #include <examples/SymbRegExercise/utils/primitives/Sqrt.h>
 #include <examples/SymbRegExercise/utils/primitives/Tanh.h>
 #include <examples/SymbRegExercise/utils/primitives/Square.h>
+#include <examples/SymbRegExercise/utils/primitives/Negated.h>
+#include <examples/SymbRegExercise/gep/GEPChromosome.h>
+#include <examples/SymbRegExercise/gep/AlgGEP.h>
 
 #include <bits/stdc++.h>
 #include <iostream>

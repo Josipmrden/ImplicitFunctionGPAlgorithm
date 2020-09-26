@@ -53,24 +53,27 @@ void InstanceRunner::runInstance(ParameterSet parameterSet)
         string datasetParameterLogDir = datasetLogDir + "/" + parametersName;
         createDirectory(datasetParameterLogDir);
 
-        string paretoFrontFilename = datasetParameterLogDir + "/paretoFront.txt";
-        auto* paretoFrontier = new ParetoFrontier(paretoFrontFilename);
-
-        for (int j = 0; j < _noRuns; j++)
-        {
+        for (int j = 0; j < _noRuns; j++) {
+            string paretoFrontFilename = datasetParameterLogDir + "/paretoFront" + to_string(j+1) + ".txt";
+            auto* paretoFrontier = new ParetoFrontier(paretoFrontFilename);
             _evaluateOp = _evaluateOp->createNew();
             _evaluateOp->_datasetFileName = dataset.fileName;
             _evaluateOp->_paretoFrontier = paretoFrontier;
 
-            string runLogDir = datasetParameterLogDir + "/" + to_string(j+1);
+            string runLogDir = datasetParameterLogDir + "/" + to_string(j + 1);
             string batchStatsString = runLogDir + "/stats.txt";
             string logFilenameString = runLogDir + "/log.txt";
             string milestoneFilenameString = runLogDir + "/m.txt";
-
+            cout << runLogDir << endl;
             createDirectory(runLogDir);
 
-            StateP state (new State);
-            TreeP tree (new Tree::Tree);
+            StateP state(new State);
+            //state->addAlgorithm((GEPP)new GEP());
+            //GEPChromosome::GEPChromosome *chromosome =  new GEPChromosome::GEPChromosome();
+            //state->addGenotype((GEPChromosomeP) chromosome);
+            TreeP tree(new Tree::Tree);
+            state->addGenotype(tree);
+
             Tree::PrimitiveP exp(new Exp);
             tree->addFunction(exp);
             Tree::PrimitiveP sqrt(new Sqrt);
@@ -79,14 +82,22 @@ void InstanceRunner::runInstance(ParameterSet parameterSet)
             tree->addFunction(square);
             Tree::PrimitiveP tanh(new Tanh);
             tree->addFunction(tanh);
-            state->addGenotype(tree);
+            Tree::PrimitiveP ngt(new Negated);
+            tree->addFunction(ngt);
+            /*
+            chromosome->userFunctions_.push_back(exp);
+            chromosome->userFunctions_.push_back(sqrt);
+            chromosome->userFunctions_.push_back(square);
+            chromosome->userFunctions_.push_back(tanh);
+            chromosome->userFunctions_.push_back(ngt);
+             */
             _state = state;
             _state->setEvalOp(_evaluateOp);
 
             _state->initialize(argc, argv);
 
-            for (int treeIndex = 0; treeIndex < _evaluateOp->noTrees; treeIndex++)
-            {
+
+            for (int treeIndex = 0; treeIndex < _evaluateOp->noTrees; treeIndex++) {
                 _state->getGenotypes()[treeIndex]->setParameterValue(
                         _state,
                         "terminalset",
@@ -101,12 +112,12 @@ void InstanceRunner::runInstance(ParameterSet parameterSet)
             _state->getRegistry()->modifyEntry("mutation.indprob", (voidP) &parameterSet.mutationProbablity);
 
             _state->getRegistry()->modifyEntry("batch.statsfile", (voidP) new string(batchStatsString));
-            _state->getRegistry()->modifyEntry("log.filename", (voidP) new string (logFilenameString));
-            _state->getRegistry()->modifyEntry("milestone.filename", (voidP) new string (milestoneFilenameString));
+            _state->getRegistry()->modifyEntry("log.filename", (voidP) new string(logFilenameString));
+            _state->getRegistry()->modifyEntry("milestone.filename", (voidP) new string(milestoneFilenameString));
             _state->getPopulation()->initialize(_state);
-            _state->run();
-        }
 
-        paretoFrontier->writeParetoFront();
+            _state->run();
+            paretoFrontier->writeParetoFront();
+        }
     }
 }

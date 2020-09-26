@@ -46,8 +46,29 @@ set(SOURCE_FILES
         implicit_functions/cross_validation/CrossValUtil.h
         implicit_functions/cross_validation/ParameterSet.cpp
         implicit_functions/cross_validation/ParameterSet.h
+        utils/SymbRegLibrary.h
+        implicit_functions/cross_validation/DatasetInfo.cpp
+        implicit_functions/cross_validation/DatasetInfo.h
+        gep/AlgGEP.cpp
+        gep/AlgGEP.h
+        gep/GEPChromosome.cpp
+        gep/GEPChromosome.h
+        gep/GEPChromosomeCrsOnePoint.h
+        gep/GEPChromosomeCrsOnePoint.cpp
+        gep/GEPChromosomeCrsTwoPoint.cpp
+        gep/GEPChromosomeCrsTwoPoint.h
+        gep/GEPChromosomeMutGauss.cpp
+        gep/GEPChromosomeMutGauss.h
+        gep/GEPChromosomeMutOp.h
+        gep/GEPChromosomeMutOp.cpp
+        gep/GEPChromosomeCrsGene.h
+        gep/GEPChromosomeCrsGene.cpp
         executables/BenchmarkTesting.cpp
-        utils/SymbRegLibrary.h implicit_functions/cross_validation/DatasetInfo.cpp implicit_functions/cross_validation/DatasetInfo.h)
+        implicit_functions/unordered/GepEvaluation.cpp
+        implicit_functions/unordered/GepEvaluation.h
+        ap/APEvalOp.cpp
+        ap/APEvalOp.h
+        )
 
 find_package(Boost)
 if(Boost_FOUND)

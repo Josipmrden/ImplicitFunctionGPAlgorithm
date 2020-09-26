@@ -23,7 +23,9 @@ bool containsAllVariables(Tree::Tree* tree, vector<string> variables);
 bool containsAllVariables(vector<Tree::Tree*> trees, vector<string> variables);
 
 vector<Point> generateRandomDataset(StateP state, int sampleSize, int varSize);
+
 bool isLowStdevOnRandomValues(Tree::Tree* tree, StateP state, vector<string> variables);
+
 vector<double> getStdevsFromPoints(Tree::Tree* firstTree, Tree::Tree* secondTree, vector<Point> points, vector<vector<string>> variables);
 
 double executeTree(Tree::Tree* tree, vector<string> variables, Point point);

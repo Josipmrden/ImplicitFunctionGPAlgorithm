@@ -4,11 +4,12 @@
 
 #include "ParameterSet.h"
 
-ParameterSet::ParameterSet(int popSize, double mutProb, SelectionType selType)
+ParameterSet::ParameterSet(int popSize, double mutProb, SelectionType selType, vector<int> depths)
 {
     this->populationSize = popSize;
     this->mutationProbablity = mutProb;
     this->selectionType = selType;
+    this->depths = depths;
 }
 
 string ParameterSet::getName()

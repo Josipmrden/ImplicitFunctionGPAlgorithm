@@ -2,6 +2,7 @@
 // Created by josipmrden on 29. 03. 2020..
 //
 
+#include <examples/SymbRegExercise/gep/GEPChromosome.h>
 #include "SymbolicRegressionUtil.h"
 
 //"<Tree size=\"13\">- 25 + * X X + * Y Y * Z Z</Tree>"; - how to write a solution

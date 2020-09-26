@@ -20,6 +20,7 @@ private:
     vector<Point> _points;
     vector<string> _variables;
     bool _initializedVariables;
+    vector<string> _operations;
     StateP _state;
 public:
     bool initialize(StateP state) override;
@@ -30,10 +31,10 @@ public:
     MultipleTreeEvaluator(StateP state, string datasetFileName, ParetoFrontier* paretoFrontier);
 
     bool containsAllVariables(IndividualP individual);
-    bool isLowStdevOnRandomValues(IndividualP individual);
+    bool isLowStdevOnRandomValues(IndividualP individual, string op);
     void initializeVariables(IndividualP individual);
-    double getResult(IndividualP individual, Point p, string op);
     double getFitnessFromPoints(IndividualP individual, vector<Point> points);
+    double getFitnessFromPoints(IndividualP individual, vector<Point> points, string op);
 
     string getName() override
     {

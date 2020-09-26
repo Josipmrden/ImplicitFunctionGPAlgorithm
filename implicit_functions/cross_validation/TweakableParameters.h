@@ -20,11 +20,12 @@ private:
     int currentSelIndex;
 public:
     vector<int> populationSizes;
+    vector<int> depths;
     vector<double> mutationProbablities;
     vector<SelectionType> selectionTypes;
 
     TweakableParameters();
-    TweakableParameters(vector<int> popSizes, vector<double> mutProbs, vector<SelectionType> selectTypes);
+    TweakableParameters(vector<int> popSizes, vector<double> mutProbs, vector<SelectionType> selectTypes, vector<int> depths);
     void fixPopSize(int popSize);
     void fixMutProb(int mutProb);
     void fixSelType(SelectionType selType);

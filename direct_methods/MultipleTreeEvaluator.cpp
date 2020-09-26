@@ -56,24 +56,6 @@ AbstractEvaluateOp *MultipleTreeEvaluator::createNew() {
 
 bool MultipleTreeEvaluator::containsAllVariables(IndividualP individual)
 {
-    //"<Tree size=\"3\">* 4 4</Tree>" -> circle
-    //"<Tree size=\"7\"> + * Y Y * X X</Tree>" -> circle
-
-    //"<Tree size=\"7\">+ * Y Y * X X</Tree>" -> sphere
-    //"<Tree size=\"7\">- * 5 5 * Z Z</Tree>" -> sphere
-
-    //"<Tree size=\"7\">+ * * X X X X</Tree>" -> hyperbola
-    //"<Tree size=\"5\">+ * Y Y 1.5</Tree>" -> hyperbola
-
-    //"<Tree size=\"11\">/ * - X 1 - X 1 * 3 3</Tree>" -> ellipse
-    //"<Tree size=\"13\">- / * - Y 2 - Y 2 * 4 4 1</Tree>" -> ellipse
-
-    //"<Tree size=\"5\">- Z * 0.1 Y</Tree>" -> harmonic oscillator
-    //"<Tree size=\"3\">* 3 X</Tree>" -> harmonic oscillator
-
-    //"<Tree size=\"5\">- Z * 0.1 Y</Tree>" -> nonlinear harmonic oscillator
-    //"<Tree size=\"4\">* 9.8 sin X</Tree>" -> nonlinear harmonic oscillator
-
     Tree::Tree* first = (Tree::Tree*) individual->getGenotype(0).get();
     Tree::Tree* second = (Tree::Tree*) individual->getGenotype(1).get();
 
@@ -119,7 +101,7 @@ void MultipleTreeEvaluator::initializeVariables(IndividualP individual)
     }
 }
 
-bool MultipleTreeEvaluator::isLowStdevOnRandomValues(IndividualP individual)
+bool MultipleTreeEvaluator::isLowStdevOnRandomValues(IndividualP individual, string op)
 {
     vector<Point> randomPoints;
     for (int i = 0; i < 10; i++)
@@ -135,7 +117,7 @@ bool MultipleTreeEvaluator::isLowStdevOnRandomValues(IndividualP individual)
     }
 
 
-    double stdev = getFitnessFromPoints(individual, randomPoints);
+    double stdev = getFitnessFromPoints(individual, randomPoints, op);
 
     return stdev < 10E-2;
 
@@ -143,104 +125,117 @@ bool MultipleTreeEvaluator::isLowStdevOnRandomValues(IndividualP individual)
 
 double MultipleTreeEvaluator::getFitnessFromPoints(IndividualP individual, vector<Point> points)
 {
-    vector<double> additionResults;
-    vector<double> subtractionResults;
-    vector<double> multiplicationResults;
-    vector<double> divisionResults;
+    Tree::Tree* first = getTreeAtIndex(individual, "", 0);
+    Tree::Tree* second = getTreeAtIndex(individual, "", 1);
+
+    map<string, vector<double>> results;
+    for (string op : _operations)
+    {
+        vector<double> emptyResults;
+        results[op] = emptyResults;
+    }
 
     for (int i = 0; i < points.size(); i++)
     {
         Point p = points[i];
-        double result1 = getResult(individual, p, "+");
-        double result2 = getResult(individual, p, "-");
-        double result3 = getResult(individual, p, "*");
-        double result4 = getResult(individual, p, "/");
 
-        additionResults.push_back(result1);
-        subtractionResults.push_back(result2);
-        multiplicationResults.push_back(result3);
-        divisionResults.push_back(result4);
+        for (int j = 0; j < this->_variables.size(); j++)
+        {
+            double value = p.coordinates[j];
+            first->setTerminalValue(this->_variables[j], &value);
+            second->setTerminalValue(this->_variables[j], &value);
+        }
+        double firstResult;
+        double secondResult;
+
+
+        first->execute(&firstResult);
+        second->execute(&secondResult);
+
+        for (string op : _operations)
+        {
+            if (op == "+")
+            {
+                results[op].push_back(firstResult + secondResult);
+            }
+            else if (op == "-")
+            {
+                results[op].push_back(firstResult - secondResult);
+            }
+            else if (op == "*")
+            {
+                results[op].push_back(firstResult * secondResult);
+            }
+            else if (op == "/")
+            {
+                results[op].push_back(firstResult / secondResult);
+            }
+        }
     }
 
-    double stdev1 = getStdev(additionResults);
-    double stdev2 = getStdev(subtractionResults);
-    double stdev3 = getStdev(multiplicationResults);
-    double stdev4 = getStdev(divisionResults);
+    double stdev = getStdev(results[_operations[0]]);
 
-    double minimalStdev = stdev1;
-    if (stdev2 < minimalStdev)
+    for (string op : _operations)
     {
-        minimalStdev = stdev2;
-    }
-    if (stdev3 < minimalStdev)
-    {
-        minimalStdev = stdev3;
-    }
-    if (stdev4 < minimalStdev)
-    {
-        minimalStdev = stdev4;
+        double potentialStdev = getStdev(results[op]);
+        if (potentialStdev < stdev)
+        {
+            stdev = potentialStdev;
+        }
     }
 
-    return minimalStdev;
+    return stdev;
 }
 
-
-double MultipleTreeEvaluator::getResult(IndividualP individual, Point p, string op)
+double MultipleTreeEvaluator::getFitnessFromPoints(IndividualP individual, vector<Point> points, string op)
 {
-    //"<Tree size=\"3\">* 4 4</Tree>" -> circle
-    //"<Tree size=\"7\"> + * Y Y * X X</Tree>" -> circle
-
-    //"<Tree size=\"7\">+ * Y Y * X X</Tree>" -> sphere
-    //"<Tree size=\"7\">- * 5 5 * Z Z</Tree>" -> sphere
-
-    //"<Tree size=\"7\">+ * * X X X X</Tree>" -> hyperbola
-    //"<Tree size=\"5\">+ * Y Y 1.5</Tree>" -> hyperbola
-
-    //"<Tree size=\"11\">/ * - X 1 - X 1 * 3 3</Tree>" -> ellipse
-    //"<Tree size=\"13\">- / * - Y 2 - Y 2 * 4 4 1</Tree>" -> ellipse
-
-    //"<Tree size=\"5\">- Z * 0.1 Y</Tree>" -> harmonic oscillator
-    //"<Tree size=\"3\">* 3 X</Tree>" -> harmonic oscillator
-
-    //"<Tree size=\"5\">- Z * 0.1 Y</Tree>" -> nonlinear harmonic oscillator
-    //"<Tree size=\"4\">* 9.8 sin X</Tree>" -> nonlinear harmonic oscillator
     Tree::Tree* first = getTreeAtIndex(individual, "", 0);
     Tree::Tree* second = getTreeAtIndex(individual, "", 1);
 
-    for (int j = 0; j < this->_variables.size(); j++)
-    {
-        double value = p.coordinates[j];
-        first->setTerminalValue(this->_variables[j], &value);
-        second->setTerminalValue(this->_variables[j], &value);
-    }
-    double firstResult;
-    double secondResult;
+    vector<double> results;
 
-    first->execute(&firstResult);
-    second->execute(&secondResult);
+    for (int i = 0; i < points.size(); i++)
+    {
+        Point p = points[i];
 
-    if (op == "+")
-    {
-        return firstResult + secondResult;
+        for (int j = 0; j < this->_variables.size(); j++)
+        {
+            double value = p.coordinates[j];
+            first->setTerminalValue(this->_variables[j], &value);
+            second->setTerminalValue(this->_variables[j], &value);
+        }
+        double firstResult;
+        double secondResult;
+
+        first->execute(&firstResult);
+        second->execute(&secondResult);
+
+        if (op == "+")
+        {
+            results.push_back(firstResult + secondResult);
+        }
+        else if (op == "-")
+        {
+            results.push_back(firstResult - secondResult);
+        }
+        else if (op == "*")
+        {
+            results.push_back(firstResult * secondResult);
+        }
+        else if (op == "/")
+        {
+            results.push_back(firstResult / secondResult);
+        }
     }
-    else if (op == "-")
-    {
-        return firstResult - secondResult;
-    }
-    else if (op == "*")
-    {
-        return firstResult * secondResult;
-    }
-    else if (op == "/")
-    {
-        return firstResult / secondResult;
-    }
-    else return 0;
+
+    double stdev = getStdev(results);
+
+    return stdev;
 }
-//figure out which is the best
 
 FitnessP MultipleTreeEvaluator::evaluate(IndividualP individual)
 {
+    this->_operations = {"+", "-" ,"*", "/"};
     Tree::Tree* first = getTreeAtIndex(individual, "", 0);
     Tree::Tree* second = getTreeAtIndex(individual, "", 1);
     vector<Tree::Tree*> allTrees = { first, second };
@@ -261,11 +256,20 @@ FitnessP MultipleTreeEvaluator::evaluate(IndividualP individual)
         return fitness;
     }
 
-    if (isLowStdevOnRandomValues(individual))
+    vector<string> leftoverOperators;
+    for (string op : _operations) {
+        if (!isLowStdevOnRandomValues(individual, op)) {
+            leftoverOperators.push_back(op);
+        }
+    }
+
+    if (leftoverOperators.empty())
     {
         fitness->setValue(domainSize * domainSize * domainSize);
         return fitness;
     }
+
+    _operations = leftoverOperators;
 
     double minimalStdev = getFitnessFromPoints(individual, this->_points);
     if (isnan(minimalStdev) || fabs(minimalStdev) > punishment)
